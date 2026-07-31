@@ -23,58 +23,6 @@
     </section>
 
     <main class="shell">
-      <header class="topbar">
-        <div class="welcome">
-          <span class="welcome-mark" aria-hidden="true"></span>
-          <span>歡迎體驗</span>
-        </div>
-        <div class="connection" aria-live="polite">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span id="connectionText">體驗準備中…</span>
-        </div>
-      </header>
-
-      <section class="guide" aria-labelledby="guideTitle">
-        <div class="guide-title">
-          <p>板塊互動故事牆</p>
-          <h1 id="guideTitle">選一塊，放上去<br />故事就開始！</h1>
-          <span>每次放一塊，平平地貼在感應區上。</span>
-        </div>
-
-        <ol class="steps" aria-label="體驗步驟">
-          <li class="step step-one">
-            <div class="step-icon pick-icon" aria-hidden="true">
-              <i></i><i></i><i></i>
-            </div>
-            <div class="step-copy">
-              <span>1</span>
-              <strong>選一塊</strong>
-              <small>挑選喜歡的板塊</small>
-            </div>
-          </li>
-          <li class="step step-two">
-            <div class="step-icon place-icon" aria-hidden="true">
-              <i></i><b></b>
-            </div>
-            <div class="step-copy">
-              <span>2</span>
-              <strong>放上去</strong>
-              <small>平放在感應區</small>
-            </div>
-          </li>
-          <li class="step step-three">
-            <div class="step-icon play-icon" aria-hidden="true">
-              <i></i>
-            </div>
-            <div class="step-copy">
-              <span>3</span>
-              <strong>看故事</strong>
-              <small>影片自動播放</small>
-            </div>
-          </li>
-        </ol>
-      </section>
-
       <section class="stage" aria-label="故事影片播放區">
         <video
           id="mainVideo"
@@ -84,17 +32,7 @@
           aria-label="目前播放的故事影片"
         ></video>
 
-        <div class="idle-state">
-          <div class="place-visual" aria-hidden="true">
-            <div class="floating-tile"><i></i></div>
-            <div class="down-arrow"></div>
-            <div class="sensor-pad"><i></i><i></i><i></i></div>
-          </div>
-          <div class="idle-copy">
-            <p>把板塊放在這裡</p>
-            <span>沒有播放？拿起來，再平放一次就可以囉！</span>
-          </div>
-        </div>
+        <div class="idle-state" aria-label="待機畫面"></div>
 
         <div class="finished-state" aria-live="polite">
           <div class="finished-mark" aria-hidden="true"><i></i></div>
@@ -106,6 +44,12 @@
           <i></i><span>故事播放中</span>
         </div>
       </section>
+
+      <!-- 只在斷線時出現，提醒工作人員 MQTT 掉了。連線正常時完全隱藏。 -->
+      <div class="connection" id="connection" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="connectionText">連線中斷</span>
+      </div>
     </main>
 
     <noscript>請啟用 JavaScript 以開始體驗。</noscript>

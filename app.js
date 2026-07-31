@@ -11,7 +11,7 @@ const videos = {
 
 const stage = document.querySelector(".stage");
 const mainVideo = document.querySelector("#mainVideo");
-const connection = document.querySelector(".connection");
+const connection = document.querySelector("#connection");
 const connectionText = document.querySelector("#connectionText");
 const soundSetup = document.querySelector("#soundSetup");
 const enableSoundButton = document.querySelector("#enableSoundButton");
@@ -21,6 +21,8 @@ let currentNode = 0;
 let idleTimer = null;
 let soundUnlocked = false;
 
+// 連線正常時整個提示隱藏（CSS 的 .connected 會把它藏起來），
+// 待機畫面上就只剩背景圖。斷線才浮出紅色小標提醒工作人員。
 function setConnection(state, label) {
   connection.classList.toggle("connected", state === "connected");
   connectionText.textContent = label;
@@ -181,7 +183,7 @@ async function prepareBackgroundCache() {
 prepareBackgroundCache();
 
 if (!window.mqtt) {
-  setConnection("connecting", "體驗準備中…");
+  setConnection("connecting", "連線元件載入失敗");
 } else {
   const randomId = crypto.randomUUID
     ? crypto.randomUUID().slice(0, 8)
@@ -196,13 +198,13 @@ if (!window.mqtt) {
   });
 
   client.on("connect", () => {
-    setConnection("connected", "體驗準備完成");
+    setConnection("connected", "已連線");
     client.subscribe(CONTROL_TOPIC, { qos: 0 });
   });
 
-  client.on("reconnect", () => setConnection("connecting", "體驗準備中…"));
-  client.on("offline", () => setConnection("connecting", "體驗準備中…"));
-  client.on("error", () => setConnection("connecting", "體驗準備中…"));
+  client.on("reconnect", () => setConnection("connecting", "重新連線中…"));
+  client.on("offline", () => setConnection("connecting", "連線中斷"));
+  client.on("error", () => setConnection("connecting", "連線中斷"));
 
   client.on("message", (topic, payload, packet) => {
     if (topic !== CONTROL_TOPIC) return;

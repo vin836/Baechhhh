@@ -1,11 +1,12 @@
 const CACHE_PREFIX = "baechhhh-video-";
-const CACHE_NAME = `${CACHE_PREFIX}2026-07-22-v7`;
+const CACHE_NAME = `${CACHE_PREFIX}2026-07-31-v8`;
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./assets/idle.jpg",
   "./vendor/mqtt.min.js",
 ];
 
