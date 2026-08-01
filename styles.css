@@ -241,13 +241,20 @@ body.video-playing {
   object-fit: contain;
 }
 
-/* 待機畫面 = 一張滿版背景圖，沒有文字也沒有圖示。
-   cover 會裁切以填滿螢幕；若你的圖不想被裁掉，改成 contain。 */
+/* 待機畫面 = 一張滿版背景圖，沒有文字也沒有圖示。 */
 .idle-state {
   position: absolute;
   inset: 0;
-  background: #000 url("assets/idle.jpg") center / cover no-repeat;
+  background: #000;
   transition: opacity 220ms ease;
+}
+
+/* cover 會裁切以填滿螢幕；若不想讓圖被裁掉，改成 contain（四周會留黑邊）。 */
+#idleImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .stage.has-video .idle-state {

@@ -32,7 +32,11 @@
           aria-label="目前播放的故事影片"
         ></video>
 
-        <div class="idle-state" aria-label="待機畫面"></div>
+        <!-- 用 <img> 而非 CSS background-image：背景圖由管理頁更換後，
+             img.src 可以直接換掉，不用整頁重新載入。 -->
+        <div class="idle-state" aria-label="待機畫面">
+          <img id="idleImage" src="assets/idle.jpg" alt="" />
+        </div>
 
         <div class="finished-state" aria-live="polite">
           <div class="finished-mark" aria-hidden="true"><i></i></div>

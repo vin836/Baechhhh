@@ -1,6 +1,6 @@
 "use strict";
 
-const OWNER = "Axoled-Student";
+const OWNER = "vin836";
 const REPOSITORY = "Baechhhh";
 const BRANCH = "main";
 const API_ROOT = "https://api.github.com";
@@ -19,6 +19,17 @@ const VIDEO_PATHS = {
   3: "assets/videos/node-3.mp4",
 };
 
+// ---- 待機背景圖 ----
+// 圖片不用像影片那樣送 GitHub Actions 轉檔 —— 在瀏覽器裡用 canvas 縮圖後
+// 直接 PUT 上去就好，省掉等 CI 的好幾分鐘。
+const IDLE_IMAGE_PATH = "assets/idle.jpg";
+const IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "gif", "bmp", "heic", "heif"]);
+const MAX_IMAGE_SOURCE_BYTES = 50 * 1024 * 1024;
+// iPad 展示用，超過 2560 寬沒有意義，只會拖慢載入
+const IMAGE_MAX_WIDTH = 2560;
+const IMAGE_MAX_HEIGHT = 1440;
+const IMAGE_JPEG_QUALITY = 0.86;
+
 const state = {
   token: "",
   node: 1,
@@ -28,6 +39,11 @@ const state = {
   busy: false,
   pendingJob: null,
   pollTimer: 0,
+  // 背景圖
+  selectedImage: null,
+  selectedImagePreviewUrl: "",
+  imageMetadata: undefined,
+  imageBusy: false,
 };
 
 const elements = {
@@ -56,6 +72,17 @@ const elements = {
   progressBar: document.querySelector("#progressBar"),
   progressText: document.querySelector("#progressText"),
   nodeInputs: Array.from(document.querySelectorAll('input[name="node"]')),
+  // 背景圖
+  currentIdleImage: document.querySelector("#currentIdleImage"),
+  currentIdleImageInfo: document.querySelector("#currentIdleImageInfo"),
+  currentIdleImageMissing: document.querySelector("#currentIdleImageMissing"),
+  imageFileInput: document.querySelector("#imageFileInput"),
+  selectedImageName: document.querySelector("#selectedImageName"),
+  newImagePanel: document.querySelector("#newImagePanel"),
+  newImage: document.querySelector("#newImage"),
+  newImageHint: document.querySelector("#newImageHint"),
+  uploadImageButton: document.querySelector("#uploadImageButton"),
+  imageMessage: document.querySelector("#imageMessage"),
 };
 
 function showOnly(screen) {
@@ -582,6 +609,198 @@ async function uploadSelectedVideo() {
   }
 }
 
+// ==================== 待機背景圖 ====================
+
+function imageExtension(fileName) {
+  const parts = fileName.toLowerCase().split(".");
+  return parts.length > 1 ? parts.pop() : "";
+}
+
+function validateImage(file) {
+  if (!file) {
+    throw new Error("請先選擇一張圖片。");
+  }
+  if (!IMAGE_EXTENSIONS.has(imageExtension(file.name)) && !file.type.startsWith("image/")) {
+    throw new Error("請選擇圖片檔案，例如 JPG、PNG 或 WebP。");
+  }
+  if (file.size <= 0) {
+    throw new Error("這張圖片是空的，請重新選擇。");
+  }
+  if (file.size > MAX_IMAGE_SOURCE_BYTES) {
+    throw new Error("圖片超過 50 MB，請先縮小檔案再上傳。");
+  }
+}
+
+// 在瀏覽器裡縮圖並轉成 JPEG。這樣不管使用者丟什麼格式（PNG、HEIC、
+// 手機拍的 4000px 大圖），最後存進 repo 的都是統一的 assets/idle.jpg。
+async function shrinkImageToJpegBytes(file) {
+  const bitmap = await createImageBitmap(file);
+
+  const scale = Math.min(
+    1,
+    IMAGE_MAX_WIDTH / bitmap.width,
+    IMAGE_MAX_HEIGHT / bitmap.height,
+  );
+  const width = Math.round(bitmap.width * scale);
+  const height = Math.round(bitmap.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d");
+  // 透明 PNG 轉 JPEG 會變黑底，先鋪白底比較接近使用者預期
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, width, height);
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  const blob = await new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (result) => (result ? resolve(result) : reject(new Error("圖片轉檔失敗，請換一張圖再試。"))),
+      "image/jpeg",
+      IMAGE_JPEG_QUALITY,
+    );
+  });
+
+  return { buffer: await blob.arrayBuffer(), width, height, size: blob.size };
+}
+
+function idleImageMetadataPath() {
+  return `/repos/${OWNER}/${REPOSITORY}/contents/${IDLE_IMAGE_PATH}?ref=${encodeURIComponent(BRANCH)}`;
+}
+
+async function loadIdleImageMetadata() {
+  try {
+    const metadata = await apiRequest(idleImageMetadataPath());
+    state.imageMetadata = metadata;
+    return metadata;
+  } catch (error) {
+    if (error.status === 404) {
+      state.imageMetadata = null;
+      return null;
+    }
+    throw error;
+  }
+}
+
+function setCurrentIdleImage(metadata) {
+  if (!metadata) {
+    elements.currentIdleImage.removeAttribute("src");
+    elements.currentIdleImage.hidden = true;
+    elements.currentIdleImageMissing.hidden = false;
+    elements.currentIdleImageInfo.textContent = "尚未上傳";
+    return;
+  }
+
+  const encodedPath = IDLE_IMAGE_PATH.split("/").map(encodeURIComponent).join("/");
+  elements.currentIdleImage.src =
+    `https://raw.githubusercontent.com/${OWNER}/${REPOSITORY}/${encodeURIComponent(BRANCH)}` +
+    `/${encodedPath}?v=${encodeURIComponent(metadata.sha)}`;
+  elements.currentIdleImage.hidden = false;
+  elements.currentIdleImageMissing.hidden = true;
+  elements.currentIdleImageInfo.textContent = humanFileSize(metadata.size);
+}
+
+function updateImageControls() {
+  const locked = state.imageBusy;
+  elements.imageFileInput.disabled = locked;
+  elements.uploadImageButton.disabled = locked || !state.selectedImage;
+  elements.uploadImageButton.textContent = locked ? "正在上傳背景圖…" : "上傳並更換背景圖";
+}
+
+function clearSelectedImage() {
+  if (state.selectedImagePreviewUrl) {
+    URL.revokeObjectURL(state.selectedImagePreviewUrl);
+  }
+  state.selectedImage = null;
+  state.selectedImagePreviewUrl = "";
+  elements.imageFileInput.value = "";
+  elements.selectedImageName.textContent = "尚未選擇圖片";
+  elements.newImage.removeAttribute("src");
+  elements.newImagePanel.hidden = true;
+  updateImageControls();
+}
+
+function chooseImage(file) {
+  try {
+    validateImage(file);
+  } catch (error) {
+    clearSelectedImage();
+    setMessage(elements.imageMessage, error.message, "error");
+    return;
+  }
+
+  if (state.selectedImagePreviewUrl) {
+    URL.revokeObjectURL(state.selectedImagePreviewUrl);
+  }
+
+  state.selectedImage = file;
+  state.selectedImagePreviewUrl = URL.createObjectURL(file);
+  elements.selectedImageName.textContent = `${file.name} · ${humanFileSize(file.size)}`;
+  elements.newImage.src = state.selectedImagePreviewUrl;
+  elements.newImagePanel.hidden = false;
+  elements.newImageHint.textContent = "圖片會自動縮小並轉成 JPEG；按下方按鈕後才會上傳。";
+  setMessage(elements.imageMessage, "");
+  updateImageControls();
+}
+
+async function uploadSelectedImage() {
+  if (state.imageBusy || !state.selectedImage) {
+    return;
+  }
+
+  const file = state.selectedImage;
+
+  try {
+    validateImage(file);
+    state.imageBusy = true;
+    updateImageControls();
+    setMessage(elements.imageMessage, "正在縮小圖片…");
+
+    const shrunk = await shrinkImageToJpegBytes(file);
+    setMessage(
+      elements.imageMessage,
+      `已縮成 ${shrunk.width}×${shrunk.height}（${humanFileSize(shrunk.size)}），正在上傳…`,
+    );
+
+    // 重新讀一次 sha —— 別人剛換過圖的話，用舊的 sha 會被 GitHub 擋下（409）
+    const latest = await loadIdleImageMetadata();
+
+    const body = {
+      message: "Update idle background image",
+      content: bytesToBase64(shrunk.buffer),
+      branch: BRANCH,
+    };
+    if (latest && latest.sha) {
+      body.sha = latest.sha;
+    }
+
+    await apiRequest(`/repos/${OWNER}/${REPOSITORY}/contents/${IDLE_IMAGE_PATH}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    clearSelectedImage();
+    setCurrentIdleImage(await loadIdleImageMetadata());
+    setMessage(
+      elements.imageMessage,
+      "背景圖已更換。牆內 iPad 最晚約 5 分鐘會自動更新，不用手動重整。",
+      "success",
+    );
+  } catch (error) {
+    if (error.status === 401) {
+      forgetToken();
+      showTokenScreen(friendlyError(error));
+      return;
+    }
+    setMessage(elements.imageMessage, friendlyError(error), "error");
+  } finally {
+    state.imageBusy = false;
+    updateImageControls();
+  }
+}
+
 function saveTokenLocally(token) {
   localStorage.setItem(TOKEN_STORAGE_KEY, token);
 }
@@ -628,6 +847,15 @@ async function openManager() {
   Promise.all([1, 2, 3].filter((node) => node !== state.node).map(loadVideoMetadata)).catch(() => {
     // Other slots will retry when the user selects them.
   });
+
+  elements.currentIdleImageInfo.textContent = "讀取中…";
+  updateImageControls();
+  loadIdleImageMetadata()
+    .then(setCurrentIdleImage)
+    .catch((error) => {
+      elements.currentIdleImageInfo.textContent = "無法讀取";
+      setMessage(elements.imageMessage, friendlyError(error), "error");
+    });
 
   if (state.pendingJob) {
     startPendingJob(state.pendingJob);
@@ -692,6 +920,7 @@ elements.changeTokenButton.addEventListener("click", () => {
   }
   forgetToken();
   clearSelectedFile();
+  clearSelectedImage();
   showTokenScreen();
 });
 
@@ -721,9 +950,18 @@ elements.newVideo.addEventListener("error", () => {
 
 elements.uploadButton.addEventListener("click", uploadSelectedVideo);
 
+elements.imageFileInput.addEventListener("change", () => {
+  chooseImage(elements.imageFileInput.files && elements.imageFileInput.files[0]);
+});
+
+elements.uploadImageButton.addEventListener("click", uploadSelectedImage);
+
 window.addEventListener("beforeunload", () => {
   if (state.selectedPreviewUrl) {
     URL.revokeObjectURL(state.selectedPreviewUrl);
+  }
+  if (state.selectedImagePreviewUrl) {
+    URL.revokeObjectURL(state.selectedImagePreviewUrl);
   }
   if (state.pollTimer) {
     clearTimeout(state.pollTimer);

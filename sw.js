@@ -16,6 +16,10 @@ const VIDEO_PATHS = [
   "./assets/videos/node-3.mp4",
 ];
 
+// 待機背景圖。可由管理頁更換，所以走「網路優先」而不是快取優先 ——
+// 快取優先的話管理頁換了圖，iPad 這邊會一直拿到舊的。
+const IDLE_IMAGE_PATH = "./assets/idle.jpg";
+
 const absoluteUrl = (path) => new URL(path, self.registration.scope).href;
 
 async function fetchAndCacheAppShell() {
@@ -200,6 +204,26 @@ async function serveVideo(request) {
   });
 }
 
+// 網路優先。抓得到就用新的並更新快取；抓不到（離線）才退回快取。
+// 快取一律存不帶查詢字串的網址，離線時 ?v=xxx 的請求也命中得到。
+async function serveIdleImage(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cacheKey = absoluteUrl(IDLE_IMAGE_PATH);
+
+  try {
+    const response = await fetch(request, { cache: "no-store" });
+    if (response.ok) {
+      await cache.put(cacheKey, response.clone());
+      return response;
+    }
+  } catch {
+    // 離線，往下走快取
+  }
+
+  const cached = await cache.match(cacheKey);
+  return cached || Response.error();
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
@@ -210,6 +234,13 @@ self.addEventListener("fetch", (event) => {
   const isVideo = VIDEO_PATHS.some((path) => requestUrl.href === absoluteUrl(path));
   if (isVideo) {
     event.respondWith(serveVideo(request));
+    return;
+  }
+
+  // 背景圖：網路優先，成功就順便更新快取；離線才退回快取版本。
+  // 比對 pathname 而非完整網址 —— app.js 會加 ?v=<etag> 繞過瀏覽器快取。
+  if (requestUrl.pathname === new URL(absoluteUrl(IDLE_IMAGE_PATH)).pathname) {
+    event.respondWith(serveIdleImage(request));
     return;
   }
 

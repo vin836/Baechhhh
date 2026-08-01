@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
     <meta name="referrer" content="no-referrer">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.github.com; img-src 'self' data:; media-src 'self' blob: https://raw.githubusercontent.com; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.github.com; img-src 'self' data: blob: https://raw.githubusercontent.com; media-src 'self' blob: https://raw.githubusercontent.com; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
     <title>更新展示影片</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="admin.css?v=4">
-    <script src="admin.js?v=4" defer></script>
+    <link rel="stylesheet" href="admin.css?v=5">
+    <script src="admin.js?v=5" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -135,6 +135,45 @@
             <p id="progressText">準備中…</p>
           </div>
           <p id="uploadMessage" class="message" role="status" aria-live="polite" hidden></p>
+        </section>
+
+        <section class="step-card" aria-labelledby="idle-image-title">
+          <div class="step-heading">
+            <span class="step-number" aria-hidden="true">4</span>
+            <div>
+              <h2 id="idle-image-title">更換待機背景圖</h2>
+              <p>沒有板塊放上去時，牆上顯示的那張圖。</p>
+            </div>
+          </div>
+
+          <div class="current-video">
+            <div class="section-label-row">
+              <p>目前的背景圖</p>
+              <span id="currentIdleImageInfo" class="file-info">讀取中…</span>
+            </div>
+            <img id="currentIdleImage" alt="目前的待機背景圖" hidden>
+            <p id="currentIdleImageMissing" class="empty-message" hidden>目前沒有背景圖，可以直接上傳。</p>
+          </div>
+
+          <div class="conversion-note">
+            <strong>自動處理</strong>
+            <span>圖片會在這台裝置上縮到最大 2560×1440 並轉成 JPEG，不用等 GitHub 轉檔。</span>
+          </div>
+
+          <input id="imageFileInput" class="file-input" type="file" accept="image/*">
+          <label class="file-button" for="imageFileInput">選擇圖片</label>
+          <p id="selectedImageName" class="selected-file">尚未選擇圖片</p>
+
+          <div id="newImagePanel" class="new-video" hidden>
+            <p>新背景圖預覽</p>
+            <img id="newImage" alt="新背景圖預覽">
+            <p id="newImageHint" class="preview-hint">圖片會自動縮小並轉成 JPEG；按下方按鈕後才會上傳。</p>
+          </div>
+
+          <button id="uploadImageButton" class="primary-button upload-button" type="button" disabled>
+            上傳並更換背景圖
+          </button>
+          <p id="imageMessage" class="message" role="status" aria-live="polite" hidden></p>
         </section>
 
         <p class="footer-note">上傳後可以關閉此頁；GitHub 會繼續轉檔。完成後，牆內 iPad 最晚約 5 分鐘會取得新影片。</p>

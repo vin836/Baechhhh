@@ -2,6 +2,7 @@ const MQTT_URL = "wss://broker.hivemq.com:8884/mqtt";
 const CONTROL_TOPIC = "axoled-student/baechhhh/20260721/video/control/v1";
 const VIDEO_UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+const IDLE_IMAGE_PATH = "assets/idle.jpg";
 
 const videos = {
   1: { src: "assets/videos/node-1.mp4", name: "影片一" },
@@ -11,6 +12,7 @@ const videos = {
 
 const stage = document.querySelector(".stage");
 const mainVideo = document.querySelector("#mainVideo");
+const idleImage = document.querySelector("#idleImage");
 const connection = document.querySelector("#connection");
 const connectionText = document.querySelector("#connectionText");
 const soundSetup = document.querySelector("#soundSetup");
@@ -141,6 +143,34 @@ function askServiceWorker(worker, type) {
   });
 }
 
+// 待機背景圖可由管理頁更換。用 HEAD 比對 ETag，發現換了就換掉 img.src，
+// 不重新整理整頁 —— 重整會中斷正在播的影片，也會讓聲音解鎖失效。
+let idleImageSignature = "";
+
+async function checkIdleImageUpdate() {
+  try {
+    const response = await fetch(IDLE_IMAGE_PATH, { method: "HEAD", cache: "no-store" });
+    if (!response.ok) return;
+
+    const signature =
+      response.headers.get("ETag") ||
+      `${response.headers.get("Last-Modified") || ""}:${response.headers.get("Content-Length") || ""}`;
+
+    if (!idleImageSignature) {
+      idleImageSignature = signature;
+      return;
+    }
+
+    if (signature !== idleImageSignature) {
+      idleImageSignature = signature;
+      // 加上查詢字串繞過瀏覽器快取，強制抓新圖
+      idleImage.src = `${IDLE_IMAGE_PATH}?v=${encodeURIComponent(signature)}`;
+    }
+  } catch {
+    // 網路不通就算了，下一輪會再試
+  }
+}
+
 async function prepareBackgroundCache() {
   if (!("serviceWorker" in navigator)) return;
 
@@ -181,6 +211,10 @@ async function prepareBackgroundCache() {
 }
 
 prepareBackgroundCache();
+
+// 背景圖跟影片用同一個檢查週期（5 分鐘）
+checkIdleImageUpdate();
+window.setInterval(checkIdleImageUpdate, VIDEO_UPDATE_CHECK_INTERVAL_MS);
 
 if (!window.mqtt) {
   setConnection("connecting", "連線元件載入失敗");

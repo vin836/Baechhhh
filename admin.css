@@ -321,7 +321,10 @@ h2 {
   font-size: 0.9rem;
 }
 
-video {
+/* 背景圖預覽和影片預覽用同一組尺寸，版面才一致 */
+video,
+#currentIdleImage,
+#newImage {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
