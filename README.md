@@ -1,10 +1,31 @@
 # Baechhhh ESP32 影片節點
 
-ESP32 讀取 GPIO 34 的 ADC 值，透過 Wi-Fi/MQTT 將節點狀態即時送到 GitHub Pages。平板只要保持網頁開啟，就會依照 `ON|1`、`ON|2`、`ON|3` 自動切換影片；回到無節點狀態時顯示等待畫面。
+ESP32 辨識放上感應區的板塊，透過 Wi-Fi/MQTT 將節點狀態即時送到 GitHub Pages。平板只要保持網頁開啟，就會依照 `ON|1` ~ `ON|8` 自動切換影片；回到無節點狀態時顯示待機背景圖。
+
+## 三種辨識方式
+
+| 資料夾 | 辨識依據 | 說明 |
+|---|---|---|
+| `Baechhhh/` | GPIO34 的 ADC 原始值 | 原版，區間寫死在程式裡 |
+| `BaechhhhResistor/` | 換算後的電阻值 | 可用序列埠校準，跨板子通用 |
+| **`BaechhhhNFC/`** | **NFC 標籤 UID** | **無類比誤差，可用網頁配對** |
+
+三者發出的 MQTT 訊息格式完全相同，**網頁端不用改任何東西**。
+
+目前展示使用 **NFC 版**，最多 8 張卡片。
+
+## 線上頁面
+
+| 用途 | 網址 |
+|---|---|
+| 展示畫面（iPad） | <https://vin836.github.io/Baechhhh/> |
+| NFC 標籤配對 | <https://vin836.github.io/Baechhhh/pair.html> |
+| 影片與背景圖管理 | <https://vin836.github.io/Baechhhh/admin.html> |
+| ESP32 訊號模擬器 | <https://vin836.github.io/Baechhhh/test.html> |
 
 ## 第一次連 Wi-Fi
 
-1. 將 `Baechhhh.ino` 上傳至 ESP32。
+1. 將韌體上傳至 ESP32（NFC 版是 `BaechhhhNFC/BaechhhhNFC.ino`）。
 2. ESP32 第一次開機會建立名為 `ESP32-Video-Setup` 的 Wi-Fi。
 3. 用手機或平板連上這個 Wi-Fi，設定頁會自動出現；若沒有，開啟 `http://192.168.4.1`。
 4. 一般家用 Wi-Fi：取消勾選「使用 eduroam / WPA2-Enterprise」，選擇 Wi-Fi 並在上方 Password 輸入密碼。
@@ -21,6 +42,7 @@ eduroam 帳號通常需要完整 realm，例如 `學號@學校網域`。外部�
 - ESP32 Arduino core 3.3.10
 - WiFiManager 2.0.17
 - PubSubClient 2.8.0
+- MFRC522 1.4.12（僅 NFC 版需要）
 
 Arduino CLI 編譯範例：
 
@@ -28,7 +50,14 @@ Arduino CLI 編譯範例：
 arduino-cli compile --fqbn esp32:esp32:esp32 .
 ```
 
-## 節點 ADC 範圍
+## 辨識板塊
+
+**NFC 版**（目前使用）：每張板塊貼一張 NFC 標籤，用 UID 辨識。接線與配對方式見 [`BaechhhhNFC/README.md`](BaechhhhNFC/README.md)。
+
+配對標籤最簡單的方式是開 [`pair.html`](https://vin836.github.io/Baechhhh/pair.html) —— 刷卡後選編號即可，不用接電腦。
+
+<details>
+<summary>原版的 ADC 區間（已不使用）</summary>
 
 | 節點 | GPIO 34 ADC |
 | --- | --- |
@@ -37,13 +66,19 @@ arduino-cli compile --fqbn esp32:esp32:esp32 .
 | 2 | 1200–2199 |
 | 3 | 2400–3399 |
 
+</details>
+
 ## 更換影片
 
-以新 MP4 覆蓋下列檔案即可，不必改程式：
+用管理頁上傳最方便，也可以直接覆蓋這些檔案：
 
-- `assets/videos/node-1.mp4`
-- `assets/videos/node-2.mp4`
-- `assets/videos/node-3.mp4`
+```
+assets/videos/node-1.mp4  ~  assets/videos/node-8.mp4
+```
+
+八個編號不必全部放滿 —— 缺的只是刷到對應標籤時沒反應，不會影響其他影片。
+
+待機背景圖是 `assets/idle.jpg`，同樣可從管理頁更換。
 
 建議使用 H.264 MP4、相同畫面比例，並控制檔案大小，平板切換會比較快。
 
@@ -51,27 +86,37 @@ arduino-cli compile --fqbn esp32:esp32:esp32 .
 
 每次 iPad Web App 開啟或重新載入後，工作人員需先點一次「開啟聲音並開始體驗」。這個使用者手勢會解鎖瀏覽器的有聲播放權限；之後 ESP32 觸發不需再碰螢幕。
 
-網站第一次在 iPad Safari 開啟時，會在背景把三支影片存進裝置快取。固定展示期間不需要觸控操作；網頁每五分鐘檢查網站與影片是否更新。
+網站第一次在 iPad Safari 開啟時，會在背景把影片與待機背景圖存進裝置快取。固定展示期間不需要觸控操作；網頁每五分鐘檢查網站、影片與背景圖是否更新。
 
-## 放置感應板塊
+## 待機畫面
 
-展示畫面使用大人與小孩都能理解的三個圖像步驟：選一塊、放上去、看故事。技術上，程式是依 GPIO 34 的 ADC 值辨識板塊；若數值落在三個有效範圍以外，網站會回到等待畫面。
+沒有板塊放上去時，整個畫面顯示 `assets/idle.jpg` 這張背景圖，沒有文字或操作提示。可從管理頁的步驟 4 更換。
+
+MQTT 斷線時右上角會浮出紅色提示，連線正常則完全隱藏。
 
 ## 即時連線說明
 
-GitHub Pages 只負責公開靜態網站；ESP32 與網頁之間使用 HiveMQ 公開測試 MQTT broker。這適合目前 Demo，不提供私密性或服務保證。正式展出時建議改成有帳號密碼的專用 MQTT broker，並同步更換 `Baechhhh.ino` 和 `app.js` 裡的 broker/topic。
+GitHub Pages 只負責公開靜態網站；ESP32 與網頁之間使用 HiveMQ 公開測試 MQTT broker。這適合目前 Demo，不提供私密性或服務保證。正式展出時建議改成有帳號密碼的專用 MQTT broker，並同步更換韌體和 `app.js` / `pair.js` / `test.js` 裡的 broker 與 topic。
+
+> topic 開頭的 `axoled-student` 只是 broker 上的命名空間字串，和 GitHub 帳號無關。改它必須韌體與網頁同時更新，否則兩邊會完全斷線。
+
+## NFC 標籤配對頁
+
+開啟 `pair.html` 可以不接電腦就配對標籤：刷卡 → 畫面顯示 UID → 按影片編號 → 再刷同一張 → 完成。設定自動存進 ESP32 的 NVS。
+
+配對用的三個 MQTT topic 定義在 [`BaechhhhNFC/README.md`](BaechhhhNFC/README.md)。沒有硬體時可跑 `BaechhhhNFC/fake_esp32.py` 模擬一台 ESP32 來測介面。
 
 ## ESP32 訊號模擬器
 
-開啟 `test.html` 可從手機或電腦模擬 ESP32 的 `ON|1`、`ON|2`、`ON|3`、`OFF|0` 訊號，也能自動輪流測試三個節點。測試頁與牆內 iPad 使用同一個 MQTT topic，因此按下後展示畫面會即時切換。
+開啟 `test.html` 可從手機或電腦模擬 ESP32 的 `ON|1` ~ `ON|8`、`OFF|0` 訊號，也能自動輪流測試八個節點。測試頁與牆內 iPad 使用同一個 MQTT topic，因此按下後展示畫面會即時切換。
 
 模擬器使用非保留 MQTT 訊號；重新整理展示頁時不會重播最後一次測試節點。展示頁也會忽略 broker 在訂閱瞬間送來的 retained 舊狀態，只處理頁面已連線後收到的新事件。
 
 ## 影片上傳管理頁
 
-開啟 `admin.html` 後，只需要選擇「影片 1／影片 2／影片 3」、挑選影片，再按「上傳並自動轉檔」。Repository、分支、路徑與 commit 都已固定，不需要手動設定。
+開啟 `admin.html` 後，只需要選擇編號（**影片 1 ~ 影片 8**）、挑選影片，再按「上傳並自動轉檔」。Repository、分支、路徑與 commit 都已固定，不需要手動設定。最下方的步驟 4 可以更換待機背景圖。
 
-第一次使用時，請貼上只授權 `Axoled-Student/Baechhhh`、具備 `Contents: Read and write` 的 fine-grained Personal Access Token。管理頁會把 Token 保存在目前裝置的瀏覽器 `localStorage`，下次開啟時自動使用；按「更換 Token」即可清除。Token 不會寫進 HTML、JavaScript 或 GitHub repository。因為瀏覽器會記住 Token，請勿在公用或共用裝置使用管理頁。
+第一次使用時，請貼上只授權 `vin836/Baechhhh`、具備 `Contents: Read and write` 的 fine-grained Personal Access Token。管理頁會把 Token 保存在目前裝置的瀏覽器 `localStorage`，下次開啟時自動使用；按「更換 Token」即可清除。Token 不會寫進 HTML、JavaScript 或 GitHub repository。因為瀏覽器會記住 Token，請勿在公用或共用裝置使用管理頁。
 
 管理頁接受 MP4、MOV、M4V、MKV、AVI、WebM、MPEG 等常見影片，來源檔案上限為 1 GB。瀏覽器會把大檔切成 12 MB 暫存區塊，GitHub Actions 再使用 FFmpeg 轉成最高 1080p／30 FPS 的 H.264、AAC、`yuv420p` MP4，並壓縮到 GitHub Pages 可發布的 100 MB 以內。暫存區塊不會加入 `main` 的 commit 歷史。
 
