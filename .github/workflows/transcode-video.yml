@@ -87,7 +87,7 @@ jobs:
             echo "Invalid job id." >&2
             exit 1
           fi
-          if [[ ! "$NODE" =~ ^[123]$ ]]; then
+          if [[ ! "$NODE" =~ ^[1-8]$ ]]; then
             echo "Invalid video node." >&2
             exit 1
           fi

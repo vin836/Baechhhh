@@ -13,11 +13,13 @@ const JOB_POLL_INTERVAL_MS = 10000;
 const JOB_TIMEOUT_MS = 60 * 60 * 1000;
 
 const VIDEO_EXTENSIONS = new Set(["mp4", "mov", "m4v", "mkv", "avi", "webm", "mpeg", "mpg"]);
-const VIDEO_PATHS = {
-  1: "assets/videos/node-1.mp4",
-  2: "assets/videos/node-2.mp4",
-  3: "assets/videos/node-3.mp4",
-};
+
+// 八張卡片。和 app.js 的 VIDEO_COUNT、韌體的 kPuzzleCount 要一致。
+const VIDEO_COUNT = 8;
+const VIDEO_NODES = Array.from({ length: VIDEO_COUNT }, (_, index) => index + 1);
+const VIDEO_PATHS = Object.fromEntries(
+  VIDEO_NODES.map((node) => [node, `assets/videos/node-${node}.mp4`]),
+);
 
 // ---- 待機背景圖 ----
 // 圖片不用像影片那樣送 GitHub Actions 轉檔 —— 在瀏覽器裡用 canvas 縮圖後
@@ -388,7 +390,7 @@ function readPendingJob() {
       return null;
     }
     const job = JSON.parse(value);
-    if (!job || ![1, 2, 3].includes(job.node) || !job.commitSha || !job.startedAt) {
+    if (!job || !VIDEO_NODES.includes(job.node) || !job.commitSha || !job.startedAt) {
       localStorage.removeItem(JOB_STORAGE_KEY);
       return null;
     }
@@ -844,9 +846,8 @@ async function openManager() {
   updateControls();
   await selectNode(state.node);
 
-  Promise.all([1, 2, 3].filter((node) => node !== state.node).map(loadVideoMetadata)).catch(() => {
-    // Other slots will retry when the user selects them.
-  });
+  // 只預載目前選的那一格。八格全載會一口氣發 16 次 API 請求，
+  // 容易撞到 GitHub 的速率限制；其餘的等使用者點到再載。
 
   elements.currentIdleImageInfo.textContent = "讀取中…";
   updateImageControls();

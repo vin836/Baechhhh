@@ -4,11 +4,16 @@ const VIDEO_UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 const IDLE_IMAGE_PATH = "assets/idle.jpg";
 
-const videos = {
-  1: { src: "assets/videos/node-1.mp4", name: "影片一" },
-  2: { src: "assets/videos/node-2.mp4", name: "影片二" },
-  3: { src: "assets/videos/node-3.mp4", name: "影片三" },
-};
+// 八張卡片。要增減數量改這個常數，其餘程式碼會跟著走 ——
+// 韌體的 kPuzzleCount 也要改成同一個數字。
+const VIDEO_COUNT = 8;
+
+const videos = Object.fromEntries(
+  Array.from({ length: VIDEO_COUNT }, (_, index) => {
+    const node = index + 1;
+    return [node, { src: `assets/videos/node-${node}.mp4`, name: `影片 ${node}` }];
+  }),
+);
 
 const stage = document.querySelector(".stage");
 const mainVideo = document.querySelector("#mainVideo");

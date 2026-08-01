@@ -1,0 +1,353 @@
+/* 沿用 test.css 的深色設計語彙 —— 兩頁都是工作人員用的工具頁，
+   視覺一致才不會誤以為是不同系統。 */
+:root {
+  color-scheme: dark;
+  --bg: #0b1024;
+  --panel: #151c38;
+  --line: rgba(255, 255, 255, 0.12);
+  --text: #f7f8ff;
+  --muted: #9fa8c9;
+  --blue: #6685ff;
+  --coral: #ff786d;
+  --yellow: #ffd463;
+  --mint: #5fd3aa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(102, 133, 255, 0.18), transparent 28rem),
+    radial-gradient(circle at 95% 80%, rgba(95, 211, 170, 0.1), transparent 24rem),
+    var(--bg);
+}
+
+button,
+a { font: inherit; }
+
+.controller {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 30px 0 48px;
+}
+
+header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.18em;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.intro {
+  max-width: 590px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.connection {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.83rem;
+  background: rgba(21, 28, 56, 0.72);
+}
+
+.connection i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 12px rgba(255, 212, 99, 0.7);
+}
+
+.connection.ready { color: #9ae8ca; }
+.connection.ready i { background: var(--mint); box-shadow: 0 0 12px rgba(95, 211, 170, 0.7); }
+.connection.error i { background: var(--coral); }
+
+.scan-card,
+.assign,
+.table-card,
+.log-card {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(21, 28, 56, 0.76);
+}
+
+/* ---------------- 最近刷到的標籤 ---------------- */
+
+.scan-card {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+}
+
+.scan-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* UID 用等寬字，逐位比對時不會看錯 */
+#lastUid {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  letter-spacing: 0.06em;
+  word-break: break-all;
+}
+
+.scan-status {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.scan-status.assigned { color: var(--yellow); }
+
+/* ---------------- 配對按鈕 ---------------- */
+
+.assign {
+  margin-top: 16px;
+  padding: 20px;
+}
+
+.assign-hint {
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.assign-hint.error { color: var(--coral); }
+
+.assign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.assign-button {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  min-height: 84px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  color: var(--text);
+  background: rgba(11, 16, 36, 0.6);
+  cursor: pointer;
+  transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+}
+
+.assign-button span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  color: #0b1024;
+  font-weight: 900;
+  background: var(--node-color, var(--blue));
+}
+
+.assign-button strong { font-size: 0.92rem; font-weight: 750; }
+
+.assign-button:not(:disabled):hover {
+  border-color: var(--node-color, var(--blue));
+  background: rgba(102, 133, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.assign-button:disabled { cursor: not-allowed; opacity: 0.35; }
+
+.node-1 { --node-color: var(--coral); }
+.node-2 { --node-color: var(--blue); }
+.node-3 { --node-color: var(--mint); }
+.node-4 { --node-color: #f0a03c; }
+.node-5 { --node-color: #9b6ef3; }
+.node-6 { --node-color: #4ab5d8; }
+.node-7 { --node-color: #e2679b; }
+.node-8 { --node-color: #6fb85c; }
+
+/* ---------------- 標籤表 ---------------- */
+
+.table-card {
+  margin-top: 16px;
+  padding: 20px;
+}
+
+.table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ghost-button {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+}
+
+.ghost-button:disabled { cursor: not-allowed; opacity: 0.4; }
+
+.tag-table {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.tag-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: rgba(11, 16, 36, 0.5);
+}
+
+.tag-row.empty { opacity: 0.5; }
+
+.tag-number {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  color: #0b1024;
+  font-size: 0.82rem;
+  font-weight: 900;
+  background: var(--muted);
+}
+
+.tag-row:not(.empty) .tag-number { background: var(--mint); }
+
+.tag-row code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+}
+
+.clear-button {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 120, 109, 0.4);
+  border-radius: 9px;
+  color: var(--coral);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.clear-button:disabled { cursor: not-allowed; opacity: 0.4; }
+
+/* ---------------- 工具列 ---------------- */
+
+.tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.tools button,
+.tools a {
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(21, 28, 56, 0.8);
+}
+
+.tools button { cursor: pointer; }
+.tools button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+.danger-button {
+  border-color: rgba(255, 120, 109, 0.4) !important;
+  color: var(--coral) !important;
+}
+
+/* ---------------- 紀錄 ---------------- */
+
+.log-card {
+  margin-top: 16px;
+  padding: 18px 20px;
+}
+
+.log-heading {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 750;
+}
+
+.log-heading small { color: var(--muted); font-weight: 500; }
+
+#eventLog {
+  margin: 12px 0 0;
+  padding-left: 24px;
+  color: #c8cee5;
+  line-height: 1.8;
+}
+
+#eventLog time { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.notice {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .controller { width: min(100% - 20px, 560px); padding-top: 20px; }
+  header { align-items: start; flex-direction: column; gap: 14px; }
+  .assign-grid { grid-template-columns: repeat(2, 1fr); }
+  .tools { align-items: stretch; flex-direction: column; }
+  .tools button, .tools a { text-align: center; }
+}

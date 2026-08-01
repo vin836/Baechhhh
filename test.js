@@ -1,6 +1,11 @@
 const MQTT_URL = "wss://broker.hivemq.com:8884/mqtt";
 const CONTROL_TOPIC = "axoled-student/baechhhh/20260721/video/control/v1";
-const AUTO_MESSAGES = ["ON|1", "ON|2", "ON|3", "OFF|0"];
+
+const VIDEO_COUNT = 8;
+const AUTO_MESSAGES = [
+  ...Array.from({ length: VIDEO_COUNT }, (_, index) => `ON|${index + 1}`),
+  "OFF|0",
+];
 
 const connection = document.querySelector("#connection");
 const connectionText = document.querySelector("#connectionText");
@@ -23,13 +28,13 @@ function setConnected(ready, label, isError = false) {
 }
 
 function stateLabel(message) {
-  const labels = {
-    "ON|1": "節點一播放中",
-    "ON|2": "節點二播放中",
-    "ON|3": "節點三播放中",
-    "OFF|0": "等待板塊",
-  };
-  return labels[message] || "收到未知訊號";
+  if (message === "OFF|0") return "等待板塊";
+
+  const match = /^ON\|(\d+)$/.exec(message);
+  const node = match ? Number(match[1]) : 0;
+  if (node >= 1 && node <= VIDEO_COUNT) return `節點 ${node} 播放中`;
+
+  return "收到未知訊號";
 }
 
 function addLog(message) {
@@ -67,7 +72,7 @@ function stopAutoTest() {
   autoTimer = null;
   autoIndex = 0;
   autoButton.classList.remove("running");
-  autoButton.textContent = "開始自動測試 1 → 2 → 3";
+  autoButton.textContent = "開始自動測試 1 → 8";
 }
 
 function startAutoTest() {

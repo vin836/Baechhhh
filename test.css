@@ -119,9 +119,10 @@ h1 {
   background: rgba(102, 133, 255, 0.14);
 }
 
+/* 八個節點加一顆「移除」。auto-fit 讓寬螢幕排三欄、手機排一欄。 */
 .controls {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
   margin-top: 16px;
 }
@@ -177,6 +178,11 @@ h1 {
 .node-one { --node-color: var(--coral); }
 .node-two { --node-color: var(--blue); }
 .node-three { --node-color: var(--mint); }
+.node-four { --node-color: #f0a03c; }
+.node-five { --node-color: #9b6ef3; }
+.node-six { --node-color: #4ab5d8; }
+.node-seven { --node-color: #e2679b; }
+.node-eight { --node-color: #6fb85c; }
 .node-off { --node-color: #aeb5ca; }
 
 .tools {

@@ -247,9 +247,11 @@ h2 {
   font-weight: 850;
 }
 
+/* 八個編號。用 auto-fit 而非固定欄數，寬螢幕排四欄、手機排兩欄，
+   都不會留下參差的最後一列。 */
 .node-picker {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
   margin: 0 0 26px;
   padding: 0;

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10162f" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>NFC 標籤配對</title>
+    <link rel="stylesheet" href="pair.css?v=1" />
+  </head>
+  <body>
+    <main class="controller">
+      <header>
+        <div>
+          <p class="eyebrow">BAECHHHH NFC</p>
+          <h1>標籤配對</h1>
+          <p class="intro">
+            把 NFC 標籤靠近讀卡器，下面會顯示它的 UID。
+            接著選一個影片編號，就配對完成 —— 不用接電腦。
+          </p>
+        </div>
+        <div class="connection" id="connection" aria-live="polite">
+          <i></i><span id="connectionText">正在連線…</span>
+        </div>
+      </header>
+
+      <section class="scan-card" aria-live="polite">
+        <span class="scan-label">最近刷到的標籤</span>
+        <strong id="lastUid">請把標籤靠近讀卡器</strong>
+        <span class="scan-status" id="lastUidStatus">等待中…</span>
+      </section>
+
+      <section class="assign" aria-labelledby="assignTitle">
+        <h2 id="assignTitle">把這張標籤配給哪個影片？</h2>
+        <p class="assign-hint" id="assignHint">
+          先刷一張標籤，再按下面的編號。
+        </p>
+        <div class="assign-grid" id="assignGrid"></div>
+      </section>
+
+      <section class="table-card" aria-labelledby="tableTitle">
+        <div class="table-heading">
+          <h2 id="tableTitle">目前的標籤表</h2>
+          <button id="refreshButton" class="ghost-button" type="button" disabled>
+            重新讀取
+          </button>
+        </div>
+        <ol class="tag-table" id="tagTable">
+          <li class="tag-row empty">正在讀取標籤表…</li>
+        </ol>
+      </section>
+
+      <section class="tools">
+        <button id="clearAllButton" class="danger-button" type="button" disabled>
+          清除全部標籤
+        </button>
+        <a href="./" target="_blank" rel="noopener">開啟展示畫面 ↗</a>
+        <a href="./test.html" target="_blank" rel="noopener">訊號模擬器 ↗</a>
+      </section>
+
+      <section class="log-card">
+        <div class="log-heading"><span>操作紀錄</span><small>最新八筆</small></div>
+        <ol id="eventLog">
+          <li>等待第一次刷卡…</li>
+        </ol>
+      </section>
+
+      <p class="notice">
+        配對後會自動存進 ESP32，重開機不會忘記。
+        若「連線狀態」一直是斷線，請確認 ESP32 已開機且連上 Wi-Fi。
+      </p>
+    </main>
+
+    <noscript>此頁需要啟用 JavaScript。</noscript>
+    <script src="vendor/mqtt.min.js"></script>
+    <script src="pair.js?v=1"></script>
+  </body>
+</html>

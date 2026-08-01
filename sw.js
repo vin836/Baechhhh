@@ -1,5 +1,8 @@
 const CACHE_PREFIX = "baechhhh-video-";
-const CACHE_NAME = `${CACHE_PREFIX}2026-07-31-v8`;
+const CACHE_NAME = `${CACHE_PREFIX}2026-08-01-v9`;
+
+// 八張卡片。和 app.js 的 VIDEO_COUNT、韌體的 kPuzzleCount 要一致。
+const VIDEO_COUNT = 8;
 
 const APP_SHELL = [
   "./",
@@ -10,11 +13,10 @@ const APP_SHELL = [
   "./vendor/mqtt.min.js",
 ];
 
-const VIDEO_PATHS = [
-  "./assets/videos/node-1.mp4",
-  "./assets/videos/node-2.mp4",
-  "./assets/videos/node-3.mp4",
-];
+const VIDEO_PATHS = Array.from(
+  { length: VIDEO_COUNT },
+  (_, index) => `./assets/videos/node-${index + 1}.mp4`,
+);
 
 // 待機背景圖。可由管理頁更換，所以走「網路優先」而不是快取優先 ——
 // 快取優先的話管理頁換了圖，iPad 這邊會一直拿到舊的。
@@ -33,29 +35,38 @@ async function fetchAndCacheAppShell() {
   }
 }
 
+// 尚未上傳的影片會回 404。這是正常狀態（八格不一定都放滿），
+// 所以只跳過該檔，不能讓整批快取失敗 —— 否則一格沒放就全部離線功能都沒了。
 async function fetchAndCacheVideos(forceRefresh = false) {
   const cache = await caches.open(CACHE_NAME);
+  let cached = 0;
 
   for (const path of VIDEO_PATHS) {
     const url = absoluteUrl(path);
-    const response = await fetch(url, {
-      cache: forceRefresh ? "reload" : "default",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Could not cache ${path}: HTTP ${response.status}`);
+    try {
+      const response = await fetch(url, {
+        cache: forceRefresh ? "reload" : "default",
+      });
+      if (response.ok) {
+        await cache.put(url, response);
+        cached += 1;
+      }
+    } catch {
+      // 網路問題，下一輪檢查會再試
     }
-
-    await cache.put(url, response);
   }
+
+  return cached;
 }
 
+// 「準備好」的定義：線上存在的影片都已快取。
+// 不能要求八支全部命中 —— 只放三支影片是完全合理的佈展方式。
 async function videoCacheReady() {
   const cache = await caches.open(CACHE_NAME);
   const matches = await Promise.all(
     VIDEO_PATHS.map((path) => cache.match(absoluteUrl(path))),
   );
-  return matches.every(Boolean);
+  return matches.some(Boolean);
 }
 
 function responseSignature(response) {
@@ -72,16 +83,21 @@ async function checkVideoUpdates() {
 
   for (const path of VIDEO_PATHS) {
     const url = absoluteUrl(path);
-    const cached = await cache.match(url);
-    const liveHeaders = await fetch(url, { method: "HEAD", cache: "no-store" });
-    if (!liveHeaders.ok) continue;
+    try {
+      const cached = await cache.match(url);
+      // 尚未上傳的影片會回 404，跳過即可
+      const liveHeaders = await fetch(url, { method: "HEAD", cache: "no-store" });
+      if (!liveHeaders.ok) continue;
 
-    if (!cached || responseSignature(cached) !== responseSignature(liveHeaders)) {
-      const freshVideo = await fetch(url, { cache: "reload" });
-      if (freshVideo.ok) {
-        await cache.put(url, freshVideo);
-        updated += 1;
+      if (!cached || responseSignature(cached) !== responseSignature(liveHeaders)) {
+        const freshVideo = await fetch(url, { cache: "reload" });
+        if (freshVideo.ok) {
+          await cache.put(url, freshVideo);
+          updated += 1;
+        }
       }
+    } catch {
+      // 單支影片的網路錯誤不該中斷其他七支的檢查
     }
   }
 
