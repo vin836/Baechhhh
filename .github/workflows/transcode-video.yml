@@ -17,29 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check-runner:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends ffmpeg jq
-
-      - name: Check FFmpeg
-        run: |
-          set -euo pipefail
-          ffmpeg -version
-          ffprobe -version
-          jq --version
-
-      - name: Check Pages update permission
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
-
   transcode:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -61,19 +39,28 @@ jobs:
         run: |
           set -euo pipefail
 
-          JOB_FILE=$(git diff-tree \
-            --no-commit-id \
-            --name-only \
-            --diff-filter=AM \
-            -r "$GITHUB_SHA" \
-            | grep -E '^\.video-jobs/[^/]+\.json$' \
-            | head -n 1 \
-            || true)
+          # push 觸發：只處理這次 commit 新增/修改的工作單。
+          # 手動觸發（workflow_dispatch）：沒有 commit 上下文，改成撿
+          # .video-jobs/ 裡最舊的一筆 —— 讓卡住的工作單有辦法補跑。
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            JOB_FILE=$(git diff-tree \
+              --no-commit-id \
+              --name-only \
+              --diff-filter=AM \
+              -r "$GITHUB_SHA" \
+              | grep -E '^\.video-jobs/[^/]+\.json$' \
+              | head -n 1 \
+              || true)
+          else
+            JOB_FILE=$(ls -1 .video-jobs/*.json 2>/dev/null | head -n 1 || true)
+          fi
 
           if [[ -z "$JOB_FILE" || ! -f "$JOB_FILE" ]]; then
-            echo "No video job manifest was found in this push." >&2
+            echo "No video job manifest was found." >&2
             exit 1
           fi
+
+          echo "Processing job manifest: $JOB_FILE"
 
           JOB_ID=$(jq -r '.id // empty' "$JOB_FILE")
           NODE=$(jq -r '.node // empty' "$JOB_FILE")
