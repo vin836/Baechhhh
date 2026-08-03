@@ -5,6 +5,7 @@ const REPOSITORY = "Baechhhh";
 const BRANCH = "main";
 const API_ROOT = "https://api.github.com";
 const API_VERSION = "2026-03-10";
+const TRANSCODE_WORKFLOW_FILE = "transcode-video.yml";
 const TOKEN_STORAGE_KEY = "baechhhh-video-upload-token";
 const JOB_STORAGE_KEY = "baechhhh-video-transcode-job";
 const UPLOAD_CHUNK_BYTES = 12 * 1024 * 1024;
@@ -112,7 +113,7 @@ function friendlyError(error) {
     return "Token 無效或已過期，請輸入新的 Token。";
   }
   if (error && error.status === 403) {
-    return "這個 Token 沒有上傳權限。請確認已授權此網站的 Contents：Read and write。";
+    return "這個 Token 權限不足。請確認 Contents 與 Actions 都設為 Read and write。";
   }
   if (error && error.status === 409) {
     return "GitHub 上的檔案剛被更新，請再試一次。";
@@ -370,6 +371,23 @@ function createJobId() {
   return `${Date.now().toString(36)}-${random[0].toString(36)}${random[1].toString(36)}`;
 }
 
+function jobManifestPath(jobId) {
+  return `.video-jobs/${jobId}.json`;
+}
+
+async function dispatchTranscodeWorkflow(jobId) {
+  await apiRequest(
+    `/repos/${OWNER}/${REPOSITORY}/actions/workflows/${encodeURIComponent(TRANSCODE_WORKFLOW_FILE)}/dispatches`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        ref: BRANCH,
+        inputs: { job_id: jobId },
+      }),
+    },
+  );
+}
+
 function setBusy(busy) {
   state.busy = busy;
   updateControls();
@@ -457,7 +475,7 @@ async function queueTranscodeJob(node, file, previousSha) {
     requested_at: new Date().toISOString(),
     chunks,
   };
-  const jobPath = `.video-jobs/${jobId}.json`;
+  const jobPath = jobManifestPath(jobId);
   const result = await apiRequest(`/repos/${OWNER}/${REPOSITORY}/contents/${jobPath}`, {
     method: "PUT",
     body: JSON.stringify({
@@ -471,29 +489,69 @@ async function queueTranscodeJob(node, file, previousSha) {
     throw new Error("影片已上傳，但無法啟動轉檔。請再試一次。");
   }
 
+  let dispatchErrorStatus = 0;
+  try {
+    await dispatchTranscodeWorkflow(jobId);
+  } catch (error) {
+    // 工作單已安全寫入 GitHub；即使 Token 缺少 Actions 權限，也要保留
+    // pendingJob 供頁面追蹤，並讓工作人員可從 Actions 手動補跑。
+    dispatchErrorStatus = Number(error && error.status) || -1;
+  }
+
   return {
     id: jobId,
     node,
     previousSha: previousSha || "",
     commitSha: result.commit.sha,
     startedAt: Date.now(),
+    dispatchRequested: dispatchErrorStatus === 0,
+    dispatchErrorStatus,
   };
 }
 
-async function findTranscodeRun(commitSha) {
+async function findTranscodeRun(job) {
   try {
     const result = await apiRequest(
-      `/repos/${OWNER}/${REPOSITORY}/actions/runs?head_sha=${encodeURIComponent(commitSha)}&per_page=20`,
+      `/repos/${OWNER}/${REPOSITORY}/actions/workflows/${encodeURIComponent(TRANSCODE_WORKFLOW_FILE)}/runs` +
+        `?branch=${encodeURIComponent(BRANCH)}&per_page=20`,
     );
     if (!result || !Array.isArray(result.workflow_runs)) {
       return null;
     }
-    return result.workflow_runs.find((run) => run.name === "Transcode uploaded video") || null;
+    const matchingCommit = result.workflow_runs.find((run) => run.head_sha === job.commitSha);
+    if (matchingCommit) {
+      return matchingCommit;
+    }
+
+    // fork 的 push 事件可能不會啟動 workflow，必須用 workflow_dispatch 補跑。
+    // 手動 run 的 head_sha 不一定等於建立工作單的 commit，因此用開始時間作後備判定。
+    const startedAt = Number(job.startedAt) || 0;
+    return (
+      result.workflow_runs.find(
+        (run) =>
+          run.event === "workflow_dispatch" &&
+          Date.parse(run.created_at || "") >= startedAt - 2 * 60 * 1000,
+      ) || null
+    );
   } catch (error) {
     if (error.status === 401) {
       throw error;
     }
     return null;
+  }
+}
+
+async function isJobManifestPending(jobId) {
+  try {
+    await apiRequest(
+      `/repos/${OWNER}/${REPOSITORY}/contents/${jobManifestPath(jobId)}?ref=${encodeURIComponent(BRANCH)}`,
+    );
+    return true;
+  } catch (error) {
+    if (error.status === 404) {
+      return false;
+    }
+    throw error;
   }
 }
 
@@ -523,13 +581,16 @@ async function pollPendingJob() {
   }
 
   try {
-    const metadata = await loadVideoMetadata(job.node);
-    if (metadata && metadata.sha && metadata.sha !== job.previousSha) {
+    const [metadata, manifestPending] = await Promise.all([
+      loadVideoMetadata(job.node),
+      isJobManifestPending(job.id),
+    ]);
+    if (metadata && (!manifestPending || (metadata.sha && metadata.sha !== job.previousSha))) {
       await finishPendingJob(metadata, job);
       return;
     }
 
-    const run = await findTranscodeRun(job.commitSha);
+    const run = await findTranscodeRun(job);
     const elapsed = Date.now() - job.startedAt;
     if (run && run.status === "completed" && run.conclusion !== "success") {
       clearPendingJob();
@@ -544,7 +605,10 @@ async function pollPendingJob() {
       return;
     }
 
-    if (run && run.status === "in_progress") {
+    if (run && run.status === "queued") {
+      setProgress(80, "GitHub 已收到轉檔請求，正在排隊…");
+      setMessage(elements.uploadMessage, `影片 ${job.node} 已安全上傳，可以關閉此頁。`, "info");
+    } else if (run && run.status === "in_progress") {
       const estimated = Math.min(94, 80 + (elapsed / JOB_TIMEOUT_MS) * 14);
       setProgress(estimated, "GitHub 正在自動轉檔，通常需要幾分鐘…");
       setMessage(elements.uploadMessage, `影片 ${job.node} 已安全上傳，可以關閉此頁。`, "info");
@@ -575,8 +639,17 @@ function startPendingJob(job) {
   state.pendingJob = job;
   savePendingJob(job);
   updateControls();
-  setProgress(76, "影片已上傳，正在等待 GitHub 開始轉檔…");
-  setMessage(elements.uploadMessage, `影片 ${job.node} 已安全上傳，可以關閉此頁。`);
+  if (job.dispatchRequested === false) {
+    setProgress(76, "影片已上傳，但 GitHub Actions 無法自動啟動");
+    setMessage(
+      elements.uploadMessage,
+      "工作單已安全保留。請確認 Token 的 Actions 權限設為 Read and write，或到 GitHub Actions 手動執行轉檔。",
+      "error",
+    );
+  } else {
+    setProgress(76, "GitHub 已收到轉檔請求，正在排隊…");
+    setMessage(elements.uploadMessage, `影片 ${job.node} 已安全上傳，可以關閉此頁。`);
+  }
   scheduleJobPoll(2500);
 }
 

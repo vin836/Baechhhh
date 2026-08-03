@@ -116,7 +116,7 @@ GitHub Pages 只負責公開靜態網站；ESP32 與網頁之間使用 HiveMQ �
 
 開啟 `admin.html` 後，只需要選擇編號（**影片 1 ~ 影片 8**）、挑選影片，再按「上傳並自動轉檔」。Repository、分支、路徑與 commit 都已固定，不需要手動設定。最下方的步驟 4 可以更換待機背景圖。
 
-第一次使用時，請貼上只授權 `vin836/Baechhhh`、具備 `Contents: Read and write` 的 fine-grained Personal Access Token。管理頁會把 Token 保存在目前裝置的瀏覽器 `localStorage`，下次開啟時自動使用；按「更換 Token」即可清除。Token 不會寫進 HTML、JavaScript 或 GitHub repository。因為瀏覽器會記住 Token，請勿在公用或共用裝置使用管理頁。
+第一次使用時，請貼上只授權 `vin836/Baechhhh`、具備 `Contents: Read and write` 與 `Actions: Read and write` 的 fine-grained Personal Access Token。Contents 權限用來上傳工作單，Actions 權限用來立即啟動轉檔。管理頁會把 Token 保存在目前裝置的瀏覽器 `localStorage`，下次開啟時自動使用；按「更換 Token」即可清除。Token 不會寫進 HTML、JavaScript 或 GitHub repository。因為瀏覽器會記住 Token，請勿在公用或共用裝置使用管理頁。
 
 管理頁接受 MP4、MOV、M4V、MKV、AVI、WebM、MPEG 等常見影片，來源檔案上限為 1 GB。瀏覽器會把大檔切成 12 MB 暫存區塊，GitHub Actions 再使用 FFmpeg 轉成最高 1080p／30 FPS 的 H.264、AAC、`yuv420p` MP4，並壓縮到 GitHub Pages 可發布的 100 MB 以內。暫存區塊不會加入 `main` 的 commit 歷史。
 

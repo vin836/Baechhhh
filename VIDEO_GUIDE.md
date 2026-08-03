@@ -17,7 +17,7 @@ GitHub 會自動輸出最高 1920×1080、30 FPS、H.264 影像、AAC 聲音與 
 5. 按「上傳並自動轉檔」。分段上傳完成後即可關閉頁面，GitHub 會繼續處理。
 6. 轉檔通常需要幾分鐘；固定 iPad 最晚約五分鐘後會取得新影片，不需要觸控重新整理。
 
-Token 只需要授權 `vin836/Baechhhh`，並給予 `Contents: Read and write`。請勿在公用裝置儲存 Token。
+Token 只需要授權 `vin836/Baechhhh`，並給予 `Contents: Read and write` 與 `Actions: Read and write`。前者用來上傳工作單，後者用來立即啟動轉檔；請勿在公用裝置儲存 Token。
 
 八個編號不必全部放滿。沒上傳的編號只是刷到對應標籤時沒反應，不會影響其他影片。
 

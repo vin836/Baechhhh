@@ -7,6 +7,11 @@ on:
     paths:
       - ".video-jobs/*.json"
   workflow_dispatch:
+    inputs:
+      job_id:
+        description: Specific queued video job ID (leave blank to process the oldest job)
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -36,6 +41,8 @@ jobs:
       - name: Assemble and transcode video
         id: transcode
         shell: bash
+        env:
+          REQUESTED_JOB_ID: ${{ inputs.job_id }}
         run: |
           set -euo pipefail
 
@@ -51,6 +58,12 @@ jobs:
               | grep -E '^\.video-jobs/[^/]+\.json$' \
               | head -n 1 \
               || true)
+          elif [[ -n "${REQUESTED_JOB_ID:-}" ]]; then
+            if [[ ! "$REQUESTED_JOB_ID" =~ ^[a-zA-Z0-9-]+$ ]]; then
+              echo "Invalid requested job id." >&2
+              exit 1
+            fi
+            JOB_FILE=".video-jobs/$REQUESTED_JOB_ID.json"
           else
             JOB_FILE=$(ls -1 .video-jobs/*.json 2>/dev/null | head -n 1 || true)
           fi
