@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "id": "msclm7ba-t04i2i1aqloix",
+  "node": 6,
+  "original_name": "1000004220.mp4",
+  "content_type": "video/mp4",
+  "size": 77642930,
+  "previous_video_sha": "",
+  "requested_at": "2026-08-03T02:16:57.478Z",
+  "chunks": [
+    {
+      "sha": "042d58b28e3d7bb232278779af7e5a8e960bc210",
+      "size": 12582912
+    },
+    {
+      "sha": "a6d6df36d08861091f3bf0aa3d36e5f76c99966f",
+      "size": 12582912
+    },
+    {
+      "sha": "6c2cd4d14bac9f983fc246651ff176ae27533db6",
+      "size": 12582912
+    },
+    {
+      "sha": "cbbbe6f12bb6d6027cf41057ad60cf715388f96b",
+      "size": 12582912
+    },
+    {
+      "sha": "9cd6fc39921510952cbeaa6244683deeb2439c06",
+      "size": 12582912
+    },
+    {
+      "sha": "9df76df03ee8688532122115c40482002f841e64",
+      "size": 12582912
+    },
+    {
+      "sha": "fd277f94439e24394925b893903ee9cc58c9635a",
+      "size": 2145458
+    }
+  ]
+}
