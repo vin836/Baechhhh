@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "id": "mscmv5ey-18sdy911q0755c",
+  "node": 5,
+  "original_name": "1000004229.mp4",
+  "content_type": "video/mp4",
+  "size": 23195580,
+  "previous_video_sha": "",
+  "requested_at": "2026-08-03T02:51:54.539Z",
+  "chunks": [
+    {
+      "sha": "8e64d447ea30057a08fbe310a519d09bbb02d66b",
+      "size": 12582912
+    },
+    {
+      "sha": "2b94034814f3736dcc1e4c8351af3b3bdddc0774",
+      "size": 10612668
+    }
+  ]
+}
