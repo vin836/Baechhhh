@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "id": "mscnbeil-hirivfn7ytrq",
+  "node": 8,
+  "original_name": "1000004233.mp4",
+  "content_type": "video/mp4",
+  "size": 25623069,
+  "previous_video_sha": "",
+  "requested_at": "2026-08-03T03:04:32.829Z",
+  "chunks": [
+    {
+      "sha": "91aa6b97f97b1e515993f9261bb62b1bd6f8d258",
+      "size": 12582912
+    },
+    {
+      "sha": "41ac7c36a1ab1679966d975435e1c2518c3bbb4a",
+      "size": 12582912
+    },
+    {
+      "sha": "869704a4b9891b11e1fa8667e055e48dc445f643",
+      "size": 457245
+    }
+  ]
+}
