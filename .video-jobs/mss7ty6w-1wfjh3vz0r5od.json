@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "id": "mss7ty6w-1wfjh3vz0r5od",
+  "node": 1,
+  "original_name": "地圖介紹完整版影片-日月潭引水道.mov",
+  "content_type": "video/quicktime",
+  "size": 129956505,
+  "previous_video_sha": "e9b822750c40da641a65dae34a304603b7885bb0",
+  "requested_at": "2026-08-14T00:35:23.096Z",
+  "chunks": [
+    {
+      "sha": "70e070fd52632ceac739d021a11de69609338f69",
+      "size": 12582912
+    },
+    {
+      "sha": "4a36823f68347c3dc2cc184774647e5de25a237d",
+      "size": 12582912
+    },
+    {
+      "sha": "1851c17b81728c7bd241bd45d3370afc88c817b1",
+      "size": 12582912
+    },
+    {
+      "sha": "d296fe9e351f7f2745ec4b971d20e8143c02b6a0",
+      "size": 12582912
+    },
+    {
+      "sha": "3ad2ed2599e019086efb83acc5ac0e370540a984",
+      "size": 12582912
+    },
+    {
+      "sha": "4ae4182f547119866b15552d359bd0b5bf155fef",
+      "size": 12582912
+    },
+    {
+      "sha": "1643e640127241ab3f742f01d39e5e2fd41b70ed",
+      "size": 12582912
+    },
+    {
+      "sha": "a31c242a35ebc342b8c83466fa1ac809ecdc9076",
+      "size": 12582912
+    },
+    {
+      "sha": "03f00b1d4ab992a7b20206d3b8ba4dc58b8c4caf",
+      "size": 12582912
+    },
+    {
+      "sha": "e95fe8e54220232410819e0810411721da818091",
+      "size": 12582912
+    },
+    {
+      "sha": "4432915b0a89f590c28bbae31b26ffed579880ca",
+      "size": 4127385
+    }
+  ]
+}
