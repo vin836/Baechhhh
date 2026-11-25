@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="重點筆記">
+  <title>重點筆記</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="icon.svg" alt="" width="28" height="28"><span>重點筆記</span></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="menuBtn" aria-label="更多" aria-haspopup="true">⋯</button>
+      <div class="menu" id="menu" hidden>
+        <button data-act="export">匯出備份（JSON）</button>
+        <button data-act="import">匯入備份</button>
+        <button data-act="reset-seed">還原內建筆記</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="搜尋標題或內容…" autocomplete="off">
+    <div class="chips" id="chips" role="tablist" aria-label="分類"></div>
+  </div>
+
+  <main id="list" class="list" aria-live="polite"></main>
+
+  <button class="fab" id="addBtn" aria-label="新增筆記">＋</button>
+
+  <!-- 檢視 / 編輯 -->
+  <dialog id="viewer" class="sheet">
+    <div class="sheet-head">
+      <button class="icon-btn" data-close aria-label="關閉">←</button>
+      <span class="sheet-cat" id="vCat"></span>
+      <div class="sheet-actions">
+        <button class="icon-btn" id="vPin" aria-label="釘選">☆</button>
+        <button class="icon-btn" id="vEdit" aria-label="編輯">✎</button>
+      </div>
+    </div>
+    <h1 id="vTitle"></h1>
+    <p class="meta" id="vMeta"></p>
+    <article class="md" id="vBody"></article>
+  </dialog>
+
+  <dialog id="editor" class="sheet">
+    <form id="editForm" method="dialog">
+      <div class="sheet-head">
+        <button type="button" class="icon-btn" data-close aria-label="取消">✕</button>
+        <span class="sheet-cat" id="eHeading">新增筆記</span>
+        <button type="submit" class="save-btn">儲存</button>
+      </div>
+      <label class="field">標題<input name="title" required maxlength="120"></label>
+      <label class="field">分類
+        <input name="cat" list="catList" required maxlength="20" placeholder="例如：韌體、待辦">
+        <datalist id="catList"></datalist>
+      </label>
+      <label class="field grow">內容
+        <textarea name="body" rows="14" placeholder="支援簡單格式：&#10;# 小標題&#10;- 項目&#10;- [ ] 待辦（可勾選）&#10;**粗體**、`程式碼`、網址自動變連結&#10;| 表 | 格 |"></textarea>
+      </label>
+      <button type="button" class="danger-btn" id="eDelete" hidden>刪除這則筆記</button>
+    </form>
+  </dialog>
+
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="seed.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

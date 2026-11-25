@@ -1,0 +1,13 @@
+{
+  "name": "重點筆記",
+  "short_name": "重點筆記",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#0f766e",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
