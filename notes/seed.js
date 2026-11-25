@@ -2,7 +2,7 @@
 // 改內容後把 SEED_VERSION +1，App 會補上新筆記、更新沒被你改過的內建筆記，
 // 不會動到你自己寫的或改過的筆記。
 
-window.SEED_VERSION = 2;
+window.SEED_VERSION = 3;
 
 window.SEED_NOTES = [
   {
@@ -29,6 +29,7 @@ window.SEED_NOTES = [
     cat: 'CH3 BJT',
     title: '一、BJT 基本構造與物理特性',
     body: `# 1. PNP 和 NPN 電晶體
+![PNP 與 NPN 構造（B 最窄）](figs/structure.svg)
 - PNP：E（射極）P⁺ ｜ N（基極 B）｜ P（集極 C）
 - NPN：E（射極）N⁺ ｜ P（基極 B）｜ N（集極 C）
 
@@ -78,6 +79,7 @@ window.SEED_NOTES = [
     cat: 'CH3 BJT',
     title: '3. 電流關係與參數 α、β、γ',
     body: `# 電流
+![三個電流的方向（NPN）](figs/currents.svg)
 - **IE = IB + IC**
 - IE > IC >> IB
 - 若 β 極大，**IE ≈ IC**
@@ -100,6 +102,7 @@ window.SEED_NOTES = [
     body: `※ **集極（C）不可當輸入；基極（B）不可當輸出。**
 
 # 1. 共基極 CB
+![共基極 CB：電路與特性曲線](figs/cb.svg)
 - 輸入在**射極 E**，輸出在**集極 C**
 - 輸出特性：**IC = αIE + ICBO**
 - 電流增益：**Ai = α ≈ 1**
@@ -107,6 +110,7 @@ window.SEED_NOTES = [
 - 輸出特性曲線：IC 對 VCB，分成飽和區、工作區、截止區（IE = 0 以下）
 
 # 2. 共射極 CE
+![共射極 CE：電路與特性曲線](figs/ce.svg)
 - 輸入在**基極 B**，輸出在**集極 C**
 - 輸出特性：**IC = βIB + ICEO**
 - 電流增益：**Ai = β**
@@ -114,6 +118,7 @@ window.SEED_NOTES = [
 - 輸出特性曲線：IC 對 VCE，分成飽和區、工作區、截止區
 
 # 3. 共集極 CC
+![共集極 CC：電路](figs/cc.svg)
 - 輸入在**基極 B**，輸出在**射極 E**
 - 輸出特性：**IE = (1+β)IB + ICEO**
 - 電流增益：**Ai = γ**

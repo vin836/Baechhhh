@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" font-family="system-ui, -apple-system, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif" font-size="15" fill="#1f2937">
+  <defs>
+    <g id="npn" fill="none" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round">
+      <line x1="0" y1="-22" x2="0" y2="22" stroke-width="4"/>
+      <line x1="0" y1="-9" x2="26" y2="-30"/><line x1="26" y1="-30" x2="26" y2="-50"/>
+      <line x1="0" y1="9" x2="26" y2="30"/><line x1="26" y1="30" x2="26" y2="50"/>
+      <line x1="-40" y1="0" x2="0" y2="0"/>
+      <polygon points="23.9,28.3 13.3,25.5 18.9,18.5" fill="#1f2937" stroke="none"/>
+    </g>
+  </defs>
+  <rect width="640" height="160" fill="#ffffff"/>
+
+  <use href="#npn" x="110" y="85"/>
+  <text x="62" y="90" text-anchor="end" font-weight="700">B</text>
+  <text x="62" y="108" text-anchor="end" font-size="13" fill="#dc2626">（入）</text>
+  <text x="146" y="42" font-weight="700">C <tspan fill="#6b7280" font-weight="400" font-size="13">（共用）</tspan></text>
+  <text x="146" y="138" font-weight="700">E <tspan fill="#2563eb">（出）</tspan></text>
+
+  <text x="270" y="40" font-size="20" font-weight="700">共集極 CC</text>
+  <text x="270" y="70">輸入在<tspan fill="#dc2626" font-weight="700">基極 B</tspan>，輸出在<tspan fill="#2563eb" font-weight="700">射極 E</tspan></text>
+  <text x="270" y="98">輸出特性：IE = (1+β)IB + ICEO</text>
+  <text x="270" y="126">電流增益：Ai = γ = 1 + β</text>
+</svg>

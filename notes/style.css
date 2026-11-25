@@ -171,6 +171,10 @@ button { cursor: pointer; }
 .md a { color: var(--primary); }
 .md .table-wrap { overflow-x: auto; margin: 10px 0; }
 .md table { border-collapse: collapse; min-width: 100%; font-size: 0.9rem; }
+.md figure { margin: 12px 0 16px; }
+.md figure a { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.md figure img { display: block; width: 100%; height: auto; }
+.md figcaption { margin-top: 6px; color: var(--muted); font-size: 0.82rem; text-align: center; }
 .md table { overflow-wrap: normal; word-break: keep-all; }
 .md th { white-space: nowrap; }
 .md td { min-width: 4.5em; }

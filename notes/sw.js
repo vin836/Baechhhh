@@ -1,6 +1,7 @@
 // 重點筆記離線快取：先回快取（秒開、可離線），同時在背景更新，下次開啟就是新版。
-const CACHE = 'study-notes-v2';
-const SHELL = ['./', './index.html', './style.css', './app.js', './seed.js', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'study-notes-v3';
+const SHELL = ['./', './index.html', './style.css', './app.js', './seed.js', './manifest.webmanifest', './icon.svg',
+  './figs/structure.svg', './figs/currents.svg', './figs/cb.svg', './figs/ce.svg', './figs/cc.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

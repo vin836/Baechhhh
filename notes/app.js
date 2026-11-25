@@ -107,16 +107,26 @@ function render(body) {
       out.push(`<${tag}>${items.join('')}</${tag}>`);
       continue;
     }
+    // 插圖：![說明](figs/xxx.svg)，只允許本站 figs/ 或 https 圖片
+    const img = line.trim().match(/^!\[([^\]]*)\]\(((?:figs\/[\w.-]+)|(?:https:\/\/[^\s)]+))\)$/);
+    if (img) {
+      const src = esc(img[2]);
+      const cap = img[1] ? `<figcaption>${esc(img[1])}</figcaption>` : '';
+      out.push(`<figure><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${esc(img[1])}" loading="lazy"></a>${cap}</figure>`);
+      i++;
+      continue;
+    }
     if (/^#{1,3} /.test(line)) { out.push(`<h3>${inline(line.replace(/^#+ /, ''))}</h3>`); i++; continue; }
     if (!line.trim()) { i++; continue; }
     const para = [];
-    while (i < lines.length && lines[i].trim() && !/^(\s*\||\s*- |\s*\d+\. |#{1,3} |```)/.test(lines[i])) para.push(inline(lines[i++]));
+    while (i < lines.length && lines[i].trim() && !/^(\s*\||\s*- |\s*\d+\. |#{1,3} |```|\s*!\[)/.test(lines[i])) para.push(inline(lines[i++]));
     out.push(`<p>${para.join('<br>')}</p>`);
   }
   return out.join('');
 }
 
 const plain = (body) => body
+  .replace(/^\s*!\[[^\]]*\]\([^)]*\)\s*$/gm, '')
   .replace(/^\s*(- \[[ xX]\] |- |\d+\. |#+ )/gm, '')
   .replace(/^\s*\|[\s|:-]+\|\s*$/gm, '')
   .replace(/[*`|]/g, ' ')
