@@ -1071,11 +1071,11 @@ VIEWS.quiz = () => {
   return `${head}
     <div>${tags}</div>
     <div class="question">${esc(q.q)}</div>
-    ${body}
+    <div id="boardSlot"></div>
     <div class="row end board-row">
       <button class="btn ghost small" data-action="toggle-board">${boardOpen ? '收起白板' : '✏️ 白板'}</button>
     </div>
-    <div id="boardSlot"></div>
+    ${body}
     ${feedback}
     <div class="kbd-hint">鍵盤：數字鍵選答案，Enter 下一題</div>`;
 };
