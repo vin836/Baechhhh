@@ -1,5 +1,5 @@
 // 刷題本離線快取：先回快取（秒開、可離線），同時在背景更新，下次開啟就是新版。
-const CACHE = 'study-quiz-v1';
+const CACHE = 'study-quiz-v2';
 const SHELL = ['./', './index.html', './style.css', './app.js', './banks.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {

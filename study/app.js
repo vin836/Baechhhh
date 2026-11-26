@@ -267,9 +267,10 @@ function syncBuiltins() {
     const have = getBank(src.id);
     if (!have) {
       const at = BUILTIN.indexOf(src);
-      const bank = { id: src.id, name: src.name, icon: src.icon, builtin: true, questions: parsed };
+      const bank = { id: src.id, name: src.name, icon: src.icon, group: src.group, builtin: true, questions: parsed };
       state.banks.splice(Math.min(at, state.banks.length), 0, bank);
     } else {
+      if (src.group) have.group = src.group;
       const ids = new Set(have.questions.map((q) => q.id));
       for (const q of parsed) if (!ids.has(q.id)) have.questions.push(q);
     }
@@ -326,23 +327,42 @@ const notFound = () => `
 
 /* ---------- 首頁 ---------- */
 
+const MAIN_GROUP = '我的題庫';
+
+function bankGroups() {
+  const groups = new Map();
+  for (const b of state.banks) {
+    const g = b.group || MAIN_GROUP;
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(b);
+  }
+  const main = groups.get(MAIN_GROUP) || [];
+  groups.delete(MAIN_GROUP);
+  return [...groups, [MAIN_GROUP, main]]; // 段考等分區排在前面
+}
+
 VIEWS.home = () => {
   const wl = wrongList().length;
   const cur = state.current;
   return `
     ${cur ? `<button class="banner resume" data-action="resume">▶ 繼續上次的測驗：${esc(cur.title)}（${cur.idx}/${cur.items.length}）</button>` : ''}
     ${wl ? `<button class="banner" data-action="start-wrong">📕 錯題本有 ${wl} 題，來複習吧 →</button>` : ''}
-    <div class="section-head">
-      <h2>我的題庫</h2>
-      <div class="row">
-        ${state.banks.length > 1 ? '<button class="btn small" data-action="setup" data-id="all">🎲 綜合</button>' : ''}
-        <button class="btn small" data-action="new-bank">＋ 新增題庫</button>
-      </div>
-    </div>
-    <div class="bank-list">
-      ${state.banks.map(bankCard).join('') || `
-        <div class="card empty"><div class="big">📚</div><p>還沒有題庫，按「新增題庫」開始吧！</p></div>`}
-    </div>`;
+    ${bankGroups().map(([g, banks]) => {
+      const isMain = g === MAIN_GROUP;
+      const mixable = isMain ? state.banks.length > 1 : banks.length > 1;
+      return `
+        <div class="section-head">
+          <h2>${isMain ? '' : '🎯 '}${esc(g)}</h2>
+          <div class="row">
+            ${mixable ? `<button class="btn small" data-action="setup" data-id="${isMain ? 'all' : 'g:' + esc(g)}">🎲 ${isMain ? '全部綜合' : '混合練習'}</button>` : ''}
+            ${isMain ? '<button class="btn small" data-action="new-bank">＋ 新增題庫</button>' : ''}
+          </div>
+        </div>
+        <div class="bank-list">
+          ${banks.map(bankCard).join('') || `
+            <div class="card empty"><div class="big">📚</div><p>還沒有自己的題庫，按「新增題庫」開始吧！</p></div>`}
+        </div>`;
+    }).join('')}`;
 };
 
 function bankCard(b) {
@@ -659,8 +679,14 @@ function buildQuestionFromDraft() {
 
 /* ---------- 測驗設定 ---------- */
 
+function banksFor(id) {
+  if (id === 'all') return state.banks;
+  if (id?.startsWith('g:')) return state.banks.filter((b) => b.group === id.slice(2));
+  return [getBank(id)].filter(Boolean);
+}
+
 function buildPool({ id, chapter = '', mode = 'all' }) {
-  const banks = id === 'all' ? state.banks : [getBank(id)].filter(Boolean);
+  const banks = banksFor(id);
   let pool = banks.flatMap((b) => b.questions.map((q) => ({ b, q })));
   if (chapter) pool = pool.filter((x) => (x.q.chapter || '') === chapter);
   if (mode === 'wrong') pool = pool.filter((x) => rec(x.q.id)?.wrong);
@@ -669,9 +695,9 @@ function buildPool({ id, chapter = '', mode = 'all' }) {
 }
 
 VIEWS.setup = ({ id, chapter = '', mode = 'all' }) => {
-  const b = id === 'all' ? null : getBank(id);
-  if (id !== 'all' && !b) return notFound();
-  const title = b ? b.name : '綜合練習（全部題庫）';
+  const b = getBank(id);
+  if (!b && !banksFor(id).length) return notFound();
+  const title = b ? b.name : id === 'all' ? '綜合練習（全部題庫）' : `${id.slice(2)}・混合練習`;
   const counts = {
     all: buildPool({ id, chapter, mode: 'all' }).length,
     new: buildPool({ id, chapter, mode: 'new' }).length,
@@ -725,7 +751,7 @@ AFTER.setup = ({ id }) => {
     e.preventDefault();
     const { chapter, mode } = read();
     const b = getBank(id);
-    const name = b ? b.name : '綜合練習';
+    const name = b ? b.name : id === 'all' ? '綜合練習' : `${id.slice(2)}・混合`;
     const modeName = { all: '', new: '・新題', wrong: '・錯題' }[mode];
     startQuiz({ id, chapter, mode, title: `${name}${chapter ? '・' + chapter : ''}${modeName}` });
   });
