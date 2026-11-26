@@ -1093,6 +1093,7 @@ VIEWS.stats = () => {
         <button class="btn small" data-action="export-all">⬇️ 匯出備份</button>
         <label class="btn small">⬆️ 匯入備份<input type="file" accept=".json,application/json" id="importFile" hidden></label>
         <button class="btn small" data-action="restore-builtin">♻️ 補回內建題庫</button>
+        <button class="btn small" data-action="check-update">🔄 檢查更新</button>
       </div>
       <div class="row">
         <button class="btn small danger" data-action="clear-records">清除作答紀錄</button>
@@ -1101,6 +1102,7 @@ VIEWS.stats = () => {
     </div>
     <p class="small muted center" style="margin-top:20px">
       💡 iPhone：Safari 分享 →「加入主畫面」；Android：Chrome 選單 →「安裝應用程式」，之後沒網路也能用。
+      <br>目前共 ${state.banks.length} 個題庫、${state.banks.reduce((s, b) => s + b.questions.length, 0)} 題
     </p>`;
 };
 
@@ -1275,6 +1277,16 @@ const ACTIONS = {
     save();
     render();
     toast('已補回內建題庫');
+  },
+  'check-update': async () => {
+    if (!navigator.onLine) { toast('目前沒有網路，連上網路後再試'); return; }
+    toast('正在下載最新版…');
+    try {
+      const regs = (await navigator.serviceWorker?.getRegistrations()) || [];
+      await Promise.all(regs.map((r) => r.update().catch(() => {})));
+      for (const k of await caches.keys()) if (k.startsWith('study-quiz-')) await caches.delete(k);
+    } catch { /* 清不掉也照樣重新載入 */ }
+    location.reload();
   },
   'clear-records': () => {
     if (!confirm('清除所有作答紀錄、錯題本與測驗歷史？題目會保留。')) return;
