@@ -845,6 +845,156 @@ function correctTextInQuiz(q, it) {
   return answerText(q, q.answer);
 }
 
+/* ---------- 計算白板 ---------- */
+
+const NUMERIC_OPT = /^[\s(（]*[−\-+]?[\d√π(]/;
+const CALC_RE = /\d\s*[×÷*/+\-−]\s*[\d(√]|[=＝]\s*[−\-]?\d/;
+
+/** 判斷是不是需要計算的題目：選項多半是數字，或解析裡有算式 */
+function needsBoard(q) {
+  if (q.type === 'tf') return false;
+  const opts = q.options || [];
+  // 選項是數字「而且」題目本身有給數據，才算計算題（排除「A 類導通角為？」這類背誦題）
+  if (/\d|承上題/.test(q.q) && opts.length && opts.filter((o) => NUMERIC_OPT.test(o)).length * 2 >= opts.length) return true;
+  if (q.type === 'fill' && q.answer.some((a) => NUMERIC_OPT.test(a)) && /\d/.test(q.q)) return true;
+  return /\d/.test(q.q) && CALC_RE.test(q.explain || '');
+}
+
+const board = { el: null, canvas: null, ctx: null, strokes: [], cur: null, key: null, open: null, tool: 'pen', color: 'ink', tall: false };
+
+function syncBoardKey() {
+  const cur = state.current;
+  const key = cur ? `${cur.start}:${cur.idx}` : null;
+  if (board.key !== key) {
+    board.key = key;
+    board.strokes = [];
+    board.open = null;
+    board.cur = null;
+    if (board.ctx) redrawBoard();
+  }
+}
+
+function inkColor(c) {
+  return c === 'ink' ? getComputedStyle(document.body).color : c;
+}
+
+function strokeStyle(ctx, s) {
+  ctx.globalCompositeOperation = s.tool === 'eraser' ? 'destination-out' : 'source-over';
+  ctx.strokeStyle = s.tool === 'eraser' ? '#000' : inkColor(s.color);
+  ctx.fillStyle = ctx.strokeStyle;
+  ctx.lineWidth = s.tool === 'eraser' ? 24 : 2.6;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+
+function drawSegment(s, from) {
+  const { ctx } = board;
+  strokeStyle(ctx, s);
+  const p = s.pts;
+  if (p.length === 1) {
+    ctx.beginPath();
+    ctx.arc(p[0][0], p[0][1], ctx.lineWidth / 2, 0, Math.PI * 2);
+    ctx.fill();
+    return;
+  }
+  ctx.beginPath();
+  ctx.moveTo(p[Math.max(from - 1, 0)][0], p[Math.max(from - 1, 0)][1]);
+  for (let i = from; i < p.length; i++) ctx.lineTo(p[i][0], p[i][1]);
+  ctx.stroke();
+}
+
+function redrawBoard() {
+  const { canvas, ctx } = board;
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  for (const s of board.strokes) drawSegment(s, 1);
+}
+
+function updateBoardBar() {
+  board.el.querySelectorAll('[data-tool]').forEach((b) => {
+    const active = b.dataset.tool === board.tool && (b.dataset.tool === 'eraser' || b.dataset.color === board.color);
+    b.classList.toggle('active', active);
+  });
+  board.el.classList.toggle('tall', board.tall);
+  board.el.querySelector('[data-board="size"]').textContent = board.tall ? '⤡ 縮小' : '⤢ 放大';
+}
+
+function ensureBoard() {
+  if (board.el) return board.el;
+  const el = document.createElement('div');
+  el.className = 'board';
+  el.innerHTML = `
+    <div class="board-bar">
+      <button type="button" data-tool="pen" data-color="ink" aria-label="黑筆"><i class="dot" style="background:var(--text)"></i></button>
+      <button type="button" data-tool="pen" data-color="#e11d48" aria-label="紅筆"><i class="dot" style="background:#e11d48"></i></button>
+      <button type="button" data-tool="pen" data-color="#2563eb" aria-label="藍筆"><i class="dot" style="background:#2563eb"></i></button>
+      <button type="button" data-tool="eraser" aria-label="橡皮擦">🧽</button>
+      <span class="grow"></span>
+      <button type="button" data-board="undo" aria-label="復原">↶</button>
+      <button type="button" data-board="clear" aria-label="清除">🗑</button>
+      <button type="button" data-board="size">⤢ 放大</button>
+    </div>
+    <canvas aria-label="計算白板，可用手指或滑鼠書寫"></canvas>`;
+  const canvas = el.querySelector('canvas');
+  board.el = el;
+  board.canvas = canvas;
+  board.ctx = canvas.getContext('2d');
+
+  el.querySelector('.board-bar').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.tool) {
+      board.tool = b.dataset.tool;
+      if (b.dataset.color) board.color = b.dataset.color;
+    } else if (b.dataset.board === 'undo') {
+      board.strokes.pop();
+      redrawBoard();
+    } else if (b.dataset.board === 'clear') {
+      board.strokes = [];
+      redrawBoard();
+    } else if (b.dataset.board === 'size') {
+      board.tall = !board.tall;
+      requestAnimationFrame(redrawBoard);
+    }
+    updateBoardBar();
+  });
+
+  const pos = (e) => {
+    const r = canvas.getBoundingClientRect();
+    return [e.clientX - r.left, e.clientY - r.top];
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.button > 0) return;
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    board.cur = { tool: board.tool, color: board.color, pts: [pos(e)] };
+    board.strokes.push(board.cur);
+    drawSegment(board.cur, 0);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!board.cur) return;
+    e.preventDefault();
+    const from = board.cur.pts.length;
+    const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    for (const ev of events.length ? events : [e]) board.cur.pts.push(pos(ev));
+    drawSegment(board.cur, from);
+  });
+  const end = () => { board.cur = null; };
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+  new ResizeObserver(() => redrawBoard()).observe(canvas);
+  updateBoardBar();
+  return el;
+}
+
 VIEWS.quiz = () => {
   const cur = state.current;
   if (!cur) return notFound();
@@ -915,15 +1065,31 @@ VIEWS.quiz = () => {
       <div class="next-bar"><button class="btn primary block" data-action="next">${last ? '看結果 🏁' : '下一題 →'}</button></div>`;
   }
 
+  syncBoardKey();
+  const boardOpen = board.open ?? needsBoard(q);
+
   return `${head}
     <div>${tags}</div>
     <div class="question">${esc(q.q)}</div>
     ${body}
+    <div class="row end board-row">
+      <button class="btn ghost small" data-action="toggle-board">${boardOpen ? '收起白板' : '✏️ 白板'}</button>
+    </div>
+    <div id="boardSlot"></div>
     ${feedback}
     <div class="kbd-hint">鍵盤：數字鍵選答案，Enter 下一題</div>`;
 };
 
 AFTER.quiz = () => {
+  const cur = state.current;
+  const it = cur?.items[cur.idx];
+  const q = it && findQ(it.b, it.q);
+  const slot = document.getElementById('boardSlot');
+  if (slot && q && (board.open ?? needsBoard(q))) {
+    slot.append(ensureBoard());
+    requestAnimationFrame(redrawBoard);
+  }
+
   const form = document.getElementById('fillForm');
   if (form) {
     const input = document.getElementById('fillInput');
@@ -931,7 +1097,8 @@ AFTER.quiz = () => {
       e.preventDefault();
       if (input.value.trim()) submitAnswer(input.value.trim());
     });
-    input.focus();
+    // 手機上自動跳出鍵盤會擋住白板，只在有實體鍵盤的裝置自動聚焦
+    if (matchMedia('(hover: hover)').matches) input.focus();
   }
   const fb = app.querySelector('.feedback');
   if (fb) fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -1159,6 +1326,12 @@ const ACTIONS = {
     if (it.picks.length) submitAnswer([...it.picks]);
   },
   next: nextQuestion,
+  'toggle-board': () => {
+    const it = state.current.items[state.current.idx];
+    const q = findQ(it.b, it.q);
+    board.open = !(board.open ?? needsBoard(q));
+    render();
+  },
   quit: () => {
     const cur = state.current;
     const done = cur.items.filter((i) => i.answer !== null).length;
