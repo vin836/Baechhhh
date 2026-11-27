@@ -1,11 +1,15 @@
 /* ---------- 🤖 AI 拍照出題：上傳課本照片 → 分批平行送給 AI → 產生題目 → 加入題庫 ---------- */
-/* API 設定只存在這台裝置的 localStorage（不會進備份檔、也不會上傳到 GitHub）。 */
+/* 預設已填好 API 設定（使用者要求寫進程式）；在「API 設定」改過的值存在這台裝置的 localStorage。 */
 
 const AI_KEY = 'study-ai-config';
-const AI_DEFAULT = { endpoint: '', apiKey: '', model: 'gpt-6.1-terra', fast: true, perBatch: 3, parallel: 4, perPhoto: 6 };
+const AI_DEFAULT = { endpoint: 'https://cpa.598787.xyz', apiKey: 'sk-vin', model: 'gpt-6.1-terra', fast: true, perBatch: 3, parallel: 4, perPhoto: 6 };
 
 function aiConfig() {
-  try { return { ...AI_DEFAULT, ...JSON.parse(localStorage.getItem(AI_KEY)) }; } catch { return { ...AI_DEFAULT }; }
+  let c = {};
+  try { c = JSON.parse(localStorage.getItem(AI_KEY)) || {}; } catch { /* 用預設 */ }
+  const out = { ...AI_DEFAULT, ...c };
+  for (const k of ['endpoint', 'apiKey', 'model']) if (!out[k]) out[k] = AI_DEFAULT[k]; // 空白就用預設
+  return out;
 }
 function aiSaveConfig(c) { localStorage.setItem(AI_KEY, JSON.stringify(c)); }
 const aiReady = (c) => c.endpoint && c.apiKey && c.model;
@@ -307,7 +311,7 @@ VIEWS.ai = ({ bank }) => {
           <button class="btn primary" data-action="ai-save-cfg">💾 儲存設定</button>
           <button class="btn" data-action="ai-test">🔌 測試連線</button>
         </div>
-        <p class="small muted">設定只存在這台裝置，不會上傳、也不會出現在備份檔裡。</p>
+        <p class="small muted">已預先設定好，可以直接使用；欄位清空並儲存會恢復預設值。</p>
       </div>
     </details>
 
