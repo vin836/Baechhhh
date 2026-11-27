@@ -465,7 +465,7 @@ VIEWS.home = () => {
           <h2>${isMain ? '' : '🎯 '}${esc(g)}</h2>
           <div class="row">
             ${mixable ? `<button class="btn small" data-action="setup" data-id="${isMain ? 'all' : 'g:' + esc(g)}">🎲 ${isMain ? '全部綜合' : '混合練習'}</button>` : ''}
-            ${isMain ? '<button class="btn small" data-action="new-bank">＋ 新增題庫</button>' : ''}
+            ${isMain ? '<button class="btn small" data-action="import-file">📥 匯入</button><button class="btn small" data-action="new-bank">＋ 新增題庫</button>' : '<button class="btn small" data-action="share-app">🔗 分享</button>'}
           </div>
         </div>
         <div class="bank-list">
@@ -517,6 +517,7 @@ VIEWS.bank = ({ id }) => {
     </div>
     <div class="row" style="margin-top:8px">
       <button class="btn small ghost" data-action="rename-bank" data-id="${b.id}">✏️ 改名</button>
+      <button class="btn small ghost" data-action="share-bank" data-id="${b.id}">🔗 分享給同學</button>
       <button class="btn small ghost" data-action="export-bank" data-id="${b.id}">⬇️ 匯出 .txt</button>
       <button class="btn small ghost danger" data-action="del-bank" data-id="${b.id}">🗑 刪除題庫</button>
     </div>
