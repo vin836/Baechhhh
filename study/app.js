@@ -812,23 +812,31 @@ function banksFor(id) {
   return [getBank(id)].filter(Boolean);
 }
 
-function buildPool({ id, chapter = '', mode = 'all' }) {
+function buildPool({ id, chapter = '', mode = 'all', kind = 'all' }) {
   const banks = banksFor(id);
   let pool = banks.flatMap((b) => b.questions.map((q) => ({ b, q })));
   if (chapter) pool = pool.filter((x) => (x.q.chapter || '') === chapter);
   if (mode === 'wrong') pool = pool.filter((x) => rec(x.q.id)?.wrong);
   if (mode === 'new') pool = pool.filter((x) => !rec(x.q.id)?.seen);
+  if (kind === 'calc') pool = pool.filter((x) => needsBoard(x.q));
+  if (kind === 'concept') pool = pool.filter((x) => !needsBoard(x.q));
   return pool;
 }
 
-VIEWS.setup = ({ id, chapter = '', mode = 'all' }) => {
+VIEWS.setup = ({ id, chapter = '', mode = 'all', kind = 'all' }) => {
   const b = getBank(id);
   if (!b && !banksFor(id).length) return notFound();
   const title = b ? b.name : id === 'all' ? '綜合練習（全部題庫）' : `${id.slice(2)}・混合練習`;
-  const counts = {
+  const kinds = {
     all: buildPool({ id, chapter, mode: 'all' }).length,
-    new: buildPool({ id, chapter, mode: 'new' }).length,
-    wrong: buildPool({ id, chapter, mode: 'wrong' }).length,
+    concept: buildPool({ id, chapter, mode: 'all', kind: 'concept' }).length,
+    calc: buildPool({ id, chapter, mode: 'all', kind: 'calc' }).length,
+  };
+  if (!kinds[kind]) kind = 'all';
+  const counts = {
+    all: buildPool({ id, chapter, mode: 'all', kind }).length,
+    new: buildPool({ id, chapter, mode: 'new', kind }).length,
+    wrong: buildPool({ id, chapter, mode: 'wrong', kind }).length,
   };
   if (!counts[mode]) mode = 'all';
   const st = state.settings;
@@ -844,6 +852,13 @@ VIEWS.setup = ({ id, chapter = '', mode = 'all' }) => {
             <option value="">全部章節</option>
             ${chs.map(([c, k]) => `<option value="${esc(c)}" ${c === chapter ? 'selected' : ''}>${esc(c)}（${k}）</option>`).join('')}
           </select>
+        </div>` : ''}
+      ${kinds.concept && kinds.calc ? `
+        <div class="field"><span class="label">題目類型</span>
+          <div class="seg">
+            ${[['all', '全部'], ['concept', '💡 觀念題'], ['calc', '🧮 計算題']].map(([v, l]) => `
+              <label><input type="radio" name="kind" value="${v}" ${kind === v ? 'checked' : ''}> ${l}（${kinds[v]}）</label>`).join('')}
+          </div>
         </div>` : ''}
       <div class="field"><span class="label">出題方式</span>
         <div class="seg">
@@ -871,16 +886,17 @@ AFTER.setup = ({ id }) => {
     state.settings.shuffleQ = fd.has('shuffleQ');
     state.settings.shuffleOpt = fd.has('shuffleOpt');
     save();
-    return { chapter: fd.get('chapter') || '', mode: fd.get('mode') || 'all' };
+    return { chapter: fd.get('chapter') || '', mode: fd.get('mode') || 'all', kind: fd.get('kind') || 'all' };
   };
   f.addEventListener('change', () => rerender(read()));
   f.addEventListener('submit', (e) => {
     e.preventDefault();
-    const { chapter, mode } = read();
+    const { chapter, mode, kind } = read();
     const b = getBank(id);
     const name = b ? b.name : id === 'all' ? '綜合練習' : `${id.slice(2)}・混合`;
     const modeName = { all: '', new: '・新題', wrong: '・錯題' }[mode];
-    startQuiz({ id, chapter, mode, title: `${name}${chapter ? '・' + chapter : ''}${modeName}` });
+    const kindName = { all: '', concept: '・觀念', calc: '・計算' }[kind];
+    startQuiz({ id, chapter, mode, kind, title: `${name}${chapter ? '・' + chapter : ''}${kindName}${modeName}` });
   });
 };
 
@@ -894,10 +910,10 @@ function optionOrder(q, shuffleOn) {
   return shuffleOn && !q.options.some((o) => NO_SHUFFLE.test(o)) ? shuffle(idx) : idx;
 }
 
-function startQuiz({ id = 'all', chapter = '', mode = 'all', ids = null, title }) {
+function startQuiz({ id = 'all', chapter = '', mode = 'all', kind = 'all', ids = null, title }) {
   let pool = ids
     ? ids.map(([bid, qid]) => ({ b: getBank(bid), q: findQ(bid, qid) })).filter((x) => x.q)
-    : buildPool({ id, chapter, mode });
+    : buildPool({ id, chapter, mode, kind });
   if (!pool.length) { toast('沒有可出的題目'); return; }
   const st = state.settings;
   if (st.shuffleQ) pool = shuffle(pool);
