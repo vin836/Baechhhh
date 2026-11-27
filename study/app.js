@@ -455,6 +455,7 @@ VIEWS.home = () => {
   const cur = state.current;
   return `
     ${cur ? `<button class="banner resume" data-action="resume">▶ 繼續上次的測驗：${esc(cur.title)}（${cur.idx}/${cur.items.length}）</button>` : ''}
+    <button class="banner ai-banner" data-action="ai-open">🤖 AI 拍照出題：丟課本照片自動產生題目 →</button>
     ${wl ? `<button class="banner" data-action="start-wrong">📕 錯題本有 ${wl} 題，來複習吧 →</button>` : ''}
     ${bankGroups().map(([g, banks]) => {
       const isMain = g === MAIN_GROUP;
@@ -512,6 +513,7 @@ VIEWS.bank = ({ id }) => {
       <button class="btn primary" data-action="setup" data-id="${b.id}" ${b.questions.length ? '' : 'disabled'}>開始練習</button>
       <button class="btn" data-action="new-q" data-id="${b.id}">＋ 新增一題</button>
       <button class="btn" data-action="batch" data-id="${b.id}">📝 批次貼上／編輯</button>
+      <button class="btn" data-action="ai-open" data-bank="${b.id}">🤖 AI 出題</button>
     </div>
     <div class="row" style="margin-top:8px">
       <button class="btn small ghost" data-action="rename-bank" data-id="${b.id}">✏️ 改名</button>

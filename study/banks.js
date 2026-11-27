@@ -2857,6 +2857,936 @@ Q: 比較〈旅夜書懷〉與〈無題〉，下列哪些正確？
 `
 },
 {
+id: 'mid2-english', name: '英文 Unit 3～4', icon: '🔤', group: '第二次段考', version: 1,
+text: `
+## U3 單字
+
+Q: Losing the final game was a big ____ for our team, but we learned a lot from it.
+(A) failure *
+(B) success
+(C) flavor
+(D) path
+解析: **failure** n. 失敗（fail + -ure）。句意：輸掉決賽是很大的失敗，但我們學到很多。
+反義字：**success** 成功。
+
+Q: failure 的反義字（ANT）是？
+(A) success *
+(B) goal
+(C) research
+(D) period
+解析: 課本標示 **failure ANT success**（失敗 ↔ 成功）。
+
+Q: 「他因為沒能贏得比賽而沮喪」最適合的寫法是？
+(A) He is depressed about his failure to win the race. *
+(B) He is depressed about his failure of win the race.
+(C) He is depressed about his failure winning the race.
+(D) He is depressed about his fail to win the race.
+解析: 句型 **failure to V**（未能做某事）。
+fail 是動詞，前面有 his 要接名詞 failure。
+
+Q: The clown's jokes were so ____ that all the kids kept laughing.
+(A) amusing *
+(B) amused
+(C) frozen
+(D) willing
+解析: **amusing** adj. 有趣的、好玩的（= funny, entertaining），用來形容「事物」令人發笑。
+amused 是「（人）感到被逗樂的」。
+
+Q: amusing 的同義字是？
+(A) funny / entertaining *
+(B) boring / dull
+(C) specific / particular
+(D) odd / strange
+解析: 課本：amusing = **funny, entertaining**（有趣的、好玩的）。
+
+Q: The puppy's silly dance ____ the whole family.
+(A) amused *
+(B) amusing
+(C) amusement
+(D) gathered
+解析: 句子缺「動詞」，**amuse** vt. 逗樂、逗笑，過去式 **amused**。
+amusing 是形容詞，不能當動詞用。
+
+Q: Before the trip, Kevin ____ all his camping gear and put it into his backpack.
+(A) gathered *
+(B) insisted
+(C) represented
+(D) displayed
+解析: **gather** vt./vi. 收集、聚集（SYN **collect**）。句意：出發前把露營裝備收集起來放進背包。
+
+Q: gather 的同義字（SYN）是？
+(A) collect *
+(B) exhibit
+(C) aim
+(D) blend
+解析: gather = **collect**（收集）。
+exhibit = display，aim = goal，blend = mix。
+
+Q: The Red Cross is an international ____ that helps people in need.
+(A) organization *
+(B) organize
+(C) flavor
+(D) failure
+解析: **organization** n. [C] 組織、機構。前面有冠詞 an + 形容詞 international，要接名詞。
+英式拼法：organisation。
+
+Q: Our class is ____ a party for our teacher's birthday.
+(A) organizing *
+(B) organization
+(C) gathering of
+(D) insisting
+解析: **organize** vt. 組織、籌備；is + V-ing 現在進行式。
+
+Q: 每個月捐錢「給」某組織，介系詞用？
+(A) donate money to an organization *
+(B) donate money for an organization
+(C) donate money at an organization
+(D) donate money with an organization
+解析: **donate A to B** 把 A 捐給 B（課本筆記標示「to → 給」）。
+
+Q: The scientist is doing ____ on new ways to save energy.
+(A) research *
+(B) researches
+(C) a research
+(D) researching
+解析: **research** n. [U] 研究、調查，是**不可數名詞**，不加 a、不加 s。
+固定用法：**do research on** + 主題（關於…的研究）。
+
+Q: 「對某主題做研究」，介系詞是？
+(A) do research on *
+(B) do research at
+(C) do research to
+(D) do research for
+解析: **do (some) research on** + 主題；on 表示「關於」。
+
+Q: The students were asked to ____ the history of their town for homework.
+(A) research *
+(B) display
+(C) freeze
+(D) embrace
+解析: **research** 也可當動詞 vt. 研究、調查。
+字源：re（再一次）+ search（搜尋）。
+
+Q: The museum will ____ paintings by young artists next month.
+(A) display *
+(B) insist
+(C) gather on
+(D) represent of
+解析: **display** vt. 展示（SYN **exhibit**）。
+
+Q: display 當動詞的同義字是？
+(A) exhibit *
+(B) collect
+(C) symbolize
+(D) blend
+解析: display = **exhibit**（展示）。
+
+Q: 「把它們展示出來（陳列中）」的片語是？
+(A) put them on display *
+(B) put them in display
+(C) put them at display
+(D) put them for display
+解析: **on display** 陳列中、展出中。課文：Dr. West insisted on putting them on display.
+
+Q: Lisa ____ practicing the piano for an hour every day.
+(A) insists on *
+(B) insists to
+(C) insists in
+(D) insists at
+解析: **insist on + V-ing**（堅持做…）。on 是介系詞，後面動詞要加 **-ing**。
+
+Q: My mom insisted on ____ me to school in the rain.
+(A) driving *
+(B) drive
+(C) to drive
+(D) drove
+解析: insist **on** + **V-ing** → driving。
+
+Q: Her ____ is to become a nurse and help sick people.
+(A) goal *
+(B) failure
+(C) flavor
+(D) period
+解析: **goal** n. [C] 目的、目標（SYN **aim**）。
+
+Q: goal 的同義字是？
+(A) aim *
+(B) path
+(C) mix
+(D) taste
+解析: goal = **aim**（目標）。
+常用：**achieve one's goal** 達成目標。
+
+Q: After years of hard work, Tina finally ____ her goal of becoming a pilot.
+(A) achieved *
+(B) insisted
+(C) amused
+(D) gathered
+解析: **achieve one's goal** 達成目標。
+
+Q: I'm ____ tired today because I didn't sleep well last night.
+(A) particularly *
+(B) particular
+(C) period
+(D) particle
+解析: 修飾形容詞 tired 要用**副詞** **particularly**（特別、尤其）。
+SYN：especially / in particular。
+
+Q: particularly 的同義字是？
+(A) especially *
+(B) generally
+(C) finally
+(D) certainly
+解析: particularly = **especially** = **in particular**（特別、尤其）。
+
+Q: Grandpa only reads ____ kinds of books, such as history and travel books.
+(A) particular *
+(B) particularly
+(C) popular
+(D) frozen
+解析: 修飾名詞 kinds 用**形容詞** **particular**（特定的，SYN **specific**）。
+
+Q: particular 當形容詞時的同義字是？
+(A) specific *
+(B) amusing
+(C) willing
+(D) enjoyable
+解析: particular adj. 特別的、特定的 = **specific**。
+
+Q: The lake ____ last winter, so we could walk on the ice.
+(A) froze *
+(B) frozen
+(C) freezed
+(D) freeze
+解析: freeze 的三態：**freeze — froze — frozen**。last winter 是過去，用過去式 **froze**。
+不規則變化，沒有 freezed。
+
+Q: freeze 的反義字（ANT）是？
+(A) melt *
+(B) mix
+(C) gather
+(D) display
+解析: freeze 結冰 ↔ **melt** 融化。
+
+Q: Put the ____ fish in warm water before you cook it.
+(A) frozen *
+(B) froze
+(C) freezing to
+(D) freeze
+解析: 修飾名詞 fish 用**形容詞** **frozen**（冷凍的，也是 freeze 的 p.p.）。
+
+Q: Purple is a ____ of red and blue.
+(A) mix *
+(B) mixes
+(C) mixing
+(D) period
+解析: **a mix of A and B**：A 和 B 的混合（物）。mix n. [sing.] 混合（SYN **blend**）。
+
+Q: My sister likes to mix orange juice ____ soda.
+(A) with *
+(B) to
+(C) of
+(D) at
+解析: **mix A with B**：把 A 和 B 混合（課本圈出 mixes … with）。
+
+Q: mix 當名詞時的同義字是？
+(A) blend *
+(B) flavor
+(C) aim
+(D) path
+解析: mix n. = **blend**（混合物）。
+
+Q: Which ice cream ____ do you like best, chocolate or vanilla?
+(A) flavor *
+(B) failure
+(C) period
+(D) goal
+解析: **flavor** n. [C] 味道、口味（SYN **taste**）；英式拼法 **flavour**。
+
+Q: flavor 的英式拼法是？
+(A) flavour *
+(B) flaver
+(C) flavore
+(D) flavr
+解析: 美式 -or / 英式 -our：flavor / **flavour**（color / colour 同理）。
+
+Q: We haven't seen each other for a long ____ of time.
+(A) period *
+(B) goal
+(C) path
+(D) mix
+解析: **period** n. [C] 一段時間、時期。固定說法 **a long period of time**。
+課文：mark the end of a period of history（標誌一個歷史時期的結束）。
+
+Q: In many countries, the dove ____ peace.
+(A) represents *
+(B) representative
+(C) representation
+(D) presents of
+解析: **represent** vt. 象徵、表示（SYN **symbolize**, **stand for**）。主詞 the dove 第三人稱單數加 s。
+
+Q: represent 的同義字，下列何者「不」是？
+(A) insist on *
+(B) symbolize
+(C) stand for
+(D) 以上皆是同義字
+解析: represent = **symbolize** = **stand for**（象徵）。insist on 是「堅持」。
+
+Q: Each class sent a ____ to the student meeting.
+(A) representative *
+(B) represent
+(C) representation
+(D) represented
+解析: **representative** n. [C] 代表（人）。冠詞 a 後接名詞「人」。
+representation n. 是「代表物、象徵」。
+
+Q: The statue is an important ____ of freedom.
+(A) representation *
+(B) representative
+(C) represent
+(D) represents
+解析: **representation** n. [C] 代表、象徵（物）。課本例：an important representation of unity（團結的象徵）。
+
+Q: We had an ____ time at the beach with good food and music.
+(A) enjoyable *
+(B) enjoy
+(C) enjoying
+(D) enjoyed
+解析: **enjoyable** adj. 令人愉快的（fun and pleasant）；修飾名詞 time。
+
+Q: Amy is always willing ____ her classmates with math.
+(A) to help *
+(B) helping
+(C) help
+(D) on helping
+解析: **be willing to V**（願意做…）。課本圈出 willing **to**。
+
+Q: Even though he was tired, Leo had a strong ____ to finish the marathon.
+(A) will *
+(B) willing
+(C) goal of
+(D) path
+解析: **will** n. [C][U] 意願、意志；**a strong will to V** 強烈的意志去做…。
+
+Q: Older people may need time, but many are glad to ____ new technology.
+(A) embrace *
+(B) amuse
+(C) freeze
+(D) gather
+解析: **embrace** vt. 欣然接受；擁抱。embrace new technology＝欣然接受新科技。
+
+Q: There is a narrow ____ through the forest to the lake.
+(A) path *
+(B) period
+(C) flavor
+(D) goal
+解析: **path** n. [C] 道路、小徑。課文：their **path to success**（通往成功的道路）。
+
+Q: 「通往成功的道路」英文是？
+(A) the path to success *
+(B) the path of success to
+(C) the path at success
+(D) the path for succeed
+解析: **path to + N**：通往…的路（筆記：to = 通往）。
+
+Q: 填入單字（失敗，n.）：Don't be afraid of ____; it teaches you a lot.
+答: failure | failures
+解析: fail (v.) + -ure → **failure** (n.) 失敗。
+
+Q: 填入單字（研究，n./v.）：Anna is doing ____ on new ways to bake a cake.
+答: research
+解析: **research** [U] 不可數，不加 s。
+
+Q: 填入單字（目標，n.）：My ____ this year is to read twenty books.
+答: goal | aim
+解析: **goal** = aim 目標。
+
+## U3 認識字（Recognition）
+
+Q: game console 的意思是？
+(A) 遊戲機 *
+(B) 燈泡
+(C) 魔術方塊
+(D) 洋芋片
+解析: **game console** n. [C] 遊戲機。
+
+Q: light bulb 的意思是？
+(A) 燈泡 *
+(B) 遊戲機
+(C) 牙膏
+(D) 手機
+解析: **light bulb** n. [C] 燈泡（課文：an LED light bulb）。
+
+Q: Rubik's Cube 的意思是？
+(A) 魔術方塊 *
+(B) 冰塊
+(C) 骰子
+(D) 積木
+解析: **Rubik's Cube** n. [C] 魔術方塊。
+
+Q: Her kind words ____ me to study harder.
+(A) motivated *
+(B) displayed
+(C) froze
+(D) gathered
+解析: **motivate** vt. 激勵；句型 **motivate sb to V**（激勵某人去做…）。
+課文：this little thought finally motivated him **to** start the Museum of Failure。
+
+Q: insufficient 的意思是？
+(A) 不足的 *
+(B) 足夠的
+(C) 有效率的
+(D) 特別的
+解析: **insufficient** adj. 不足的（in- 否定 + sufficient 足夠的）。
+課文：insufficient knowledge of the target customers（對目標客群了解不足）。
+
+Q: 「洋芋片」的美式與英式說法分別是？
+(A) chip / crisp *
+(B) crisp / chip
+(C) chip / chips
+(D) fries / crisp
+解析: Around the World：美 **chip**、英 **crisp**；腹瀉：美 **diarrhea**、英 **diarrhoea**。
+
+Q: diarrhea 的意思是？
+(A) 腹瀉 *
+(B) 頭痛
+(C) 發燒
+(D) 過敏
+解析: **diarrhea** n. [U] 腹瀉（英式 diarrhoea）。
+
+Q: 填入英文（vt. 激勵）：The coach knows how to ____ his players.
+答: motivate
+解析: **motivate** vt. 激勵。
+
+## U3 片語
+
+Q: Jenny and I have a lot ____ common. We both love hiking and comics.
+(A) in *
+(B) on
+(C) at
+(D) with
+解析: **have ... in common** 有…共通點（have a lot / nothing / something in common）。
+
+Q: My brother and I have nothing in common. 意思是？
+(A) 我和哥哥毫無共通點 *
+(B) 我和哥哥什麼都一起做
+(C) 我和哥哥很普通
+(D) 我和哥哥沒有共同的朋友
+解析: have **nothing** in common：完全沒有共通點。
+
+Q: The team needs to ____ a better plan before Friday.
+(A) come up with *
+(B) get tired of
+(C) go out of
+(D) be due to
+解析: **come up with** 提出（想法、計畫），相似：**think up**。
+
+Q: come up with 的相似說法是？
+(A) think up *
+(B) give up
+(C) look up
+(D) end up
+解析: 課本筆記：come up with ≈ **think up**（想出）。
+
+Q: Ben got tired ____ eating noodles every day, so he tried rice.
+(A) of *
+(B) with
+(C) at
+(D) for
+解析: **get / be tired of** + N/V-ing：厭倦…（= be bored with）。
+注意 **tired from** 是「因…而疲累」，意思不同。
+
+Q: be tired of 的同義說法是？
+(A) be bored with *
+(B) be interested in
+(C) be willing to
+(D) be famous for
+解析: be tired of = **be bored with**（對…感到厭煩）。
+
+Q: The game was canceled ____ the heavy rain.
+(A) due to *
+(B) because
+(C) in common
+(D) so that
+解析: **due to** + 名詞：由於、因為（SYN **because of**）。
+because 是連接詞，後面要接**子句**（S + V），不能直接接 the heavy rain。
+
+Q: 下列何者可以替換 due to？
+(A) because of *
+(B) because
+(C) although
+(D) so
+解析: due to = **because of**，兩者後面都接名詞（片語）。
+
+Q: Using a flip phone today is a bit ____ the times.
+(A) behind *
+(B) after
+(C) out of
+(D) due to
+解析: **behind the times** 過時、落伍（not modern）。
+
+Q: The small bookstore lost most of its customers and finally went out of ____.
+(A) business *
+(B) common
+(C) times
+(D) display
+解析: **go out of business** 破產、停業（to stop doing business because there is no money）。
+
+Q: 填入片語（破產，過去式）：The shop ____ ____ ____ ____ last year.
+答: went out of business
+解析: **go out of business** 的過去式：went out of business。
+
+Q: 填入片語（提出，現在式）：Can you ____ ____ ____ a good idea for the poster?
+答: come up with
+解析: **come up with** 提出（想法）。
+
+## U3 字尾 -ure
+
+Q: 「-ure」加在動詞後面，會形成什麼詞性？
+(A) 名詞 *
+(B) 形容詞
+(C) 副詞
+(D) 動詞
+解析: Word Smart：**-ure 為名詞字尾，加在動詞後**。
+例：fail → failure、depart → departure。
+
+Q: depart + ure → ？
+(A) departure（啟程） *
+(B) departmenture
+(C) departer
+(D) departing
+解析: **depart → departure** 啟程、出發。
+
+Q: close + ure → ？
+(A) closure *
+(B) closeure
+(C) closser
+(D) closture
+解析: 字尾是 e 時：**去 e 加 ure** → **closure** 關閉。
+
+Q: expose + ure → ？
+(A) exposure *
+(B) exposeure
+(C) exposture
+(D) exposer
+解析: **去 e 加 ure** → **exposure** 暴露。
+
+Q: 填入（壓力，n.）：press → ____
+答: pressure
+解析: press + ure → **pressure** 壓力。
+
+Q: 填入（愉悅，n.）：please → ____
+答: pleasure
+解析: please **去 e 加 ure** → **pleasure** 愉悅。
+
+Q: 填入（失敗，n.）：fail → ____
+答: failure
+解析: fail + ure → **failure**。
+
+Q: The airport shows the ____ time of every flight.
+(A) departure *
+(B) depart
+(C) departed
+(D) closure
+解析: 冠詞 the 後面修飾 time 的名詞：**departure time** 起飛（出發）時間。
+
+## U3 文法：One／Another／The other
+
+Q: 三者依序列舉時，正確的組合是？
+(A) One... Another... The other... *
+(B) One... The other... Another...
+(C) One... Other... The another...
+(D) One... Another... Other...
+解析: 三個東西逐一介紹：
+1. **One** + N …（第一個）
+2. **Another** (+ N) …（另一個）
+3. **The other** (+ N) …（最後剩下的那一個）
+
+Q: I have three pets. One is a cat, another is a dog, and ____ is a rabbit.
+(A) the other *
+(B) another
+(C) other
+(D) others
+解析: 總共三個，最後剩下**特定的那一個**要加 the → **the other**。
+
+Q: There are three reasons. One reason is that it is cheap. ____ reason is that it is light. The other reason is that it is pretty.
+(A) Another *
+(B) The other
+(C) Other
+(D) Others
+解析: 第二個（還沒到最後）用 **Another** + 單數名詞。
+
+Q: Tom has two sisters. One is a teacher, and ____ is a nurse.
+(A) the other *
+(B) another
+(C) other
+(D) the another
+解析: **只有兩個**時：One…, **the other**…（剩下的就是那一個）。
+沒有 the another 這種說法。
+
+Q: 下列何者用法「錯誤」？
+(A) The another reason is that it is useful. *
+(B) Another reason is that it is useful.
+(C) The other reason is that it is useful.
+(D) One reason is that it is useful.
+解析: another = an + other，已經有冠詞 an，**不能再加 the**。
+
+Q: Among the three gifts, one is a book, another is a cap, and the other ____ a watch.
+(A) is *
+(B) are
+(C) be
+(D) were
+解析: the other 指「那一個」，是**單數** → 動詞用 **is**。
+
+Q: 填入（三者中的第三個）：One is red, another is blue, and ____ ____ is green.
+答: the other
+解析: 三者最後一個：**the other**。
+
+## U3 文法：間接問句
+
+Q: 間接問句的正確語序是？
+(A) S + V + wh- + S (+ Aux) + V *
+(B) S + V + wh- + Aux + S + V
+(C) S + V + Aux + wh- + S + V
+(D) wh- + Aux + S + V
+解析: 間接問句（名詞子句）用**直述句語序**：疑問詞後面接 **主詞 + 動詞**，不要再倒裝。
+例：Where **could she** find…? → I asked where **she could** find…
+
+Q: Where could she find a post office? → Julie asked ____ find a post office.
+(A) where she could *
+(B) where could she
+(C) could she where
+(D) she where could
+解析: 疑問詞 where + 主詞 she + 助動詞 could → **where she could**。
+
+Q: How should he organize the event? → Mr. Wu wants to know ____ the event.
+(A) how he should organize *
+(B) how should he organize
+(C) how does he organize
+(D) he how should organize
+解析: wh- + S + Aux + V：**how he should organize**。
+
+Q: When will the museum display the paintings? → Do you know ____ the paintings?
+(A) when the museum will display *
+(B) when will the museum display
+(C) when does the museum display
+(D) the museum when will display
+解析: 間接問句要恢復直述語序：**when the museum will display**。
+
+Q: Why do so many products fail? → He wanted to understand ____.
+(A) why so many products fail *
+(B) why do so many products fail
+(C) why so many products do fail
+(D) why did so many products fail
+解析: 原句的 **do 是為了疑問句而加的助動詞**，改成間接問句要去掉，動詞還原：why so many products **fail**。
+課文：He wanted to understand why so many products fail.
+
+Q: How do organizations come up with ideas? → Dr. West wanted to know ____ ideas.
+(A) how organizations come up with *
+(B) how do organizations come up with
+(C) how organizations do come up with
+(D) how organizations comes up with
+解析: 去掉 do，主詞 organizations 是複數，動詞用原形 come：**how organizations come up with**。
+
+Q: Where does Amy live? → I don't know ____.
+(A) where Amy lives *
+(B) where does Amy live
+(C) where Amy live
+(D) where Amy does live
+解析: 去掉 does 後，主詞 Amy 第三人稱單數 → 動詞要加 s：**where Amy lives**。
+
+Q: What did Ken buy yesterday? → Can you tell me ____ yesterday?
+(A) what Ken bought *
+(B) what did Ken buy
+(C) what Ken buy
+(D) what Ken did buy
+解析: 去掉 did，動詞改**過去式** bought：**what Ken bought**。
+
+Q: 下列間接問句何者正確？
+(A) I wonder why she is crying. *
+(B) I wonder why is she crying.
+(C) I wonder why does she cry.
+(D) I wonder why she does is crying.
+解析: be 動詞的問句 Why is she crying? → 間接問句把 is 放回主詞後面：why **she is** crying。
+
+## U3 課文理解
+
+Q: According to the reading, a product usually succeeds for three reasons. Which is NOT one of them?
+(A) It is very cheap. *
+(B) It is useful.
+(C) It is much better than older products.
+(D) It is amusing.
+解析: 課文三個成功原因：
+1. **useful**（實用）
+2. **much better than older products**（比舊產品好很多）
+3. **amusing**（有趣）
+沒有提到便宜。
+
+Q: In the sentence "it is much better than older products," the word "much" is used to ____.
+(A) make the comparative stronger *
+(B) show the number of products
+(C) mean "many"
+(D) show the past tense
+解析: **much / a lot / far / even / a little / a bit** + 比較級：用來**加強或修飾比較級**。
+much better＝好很多。
+
+Q: Who started the Museum of Failure?
+(A) Dr. Samuel West *
+(B) Olinka Vištica
+(C) A toothpaste company
+(D) Google
+解析: 課文：Dr. Samuel West 收集失敗產品，創立 Museum of Failure（失敗博物館）。
+
+Q: Where and when was the Museum of Failure started?
+(A) In Sweden, in 2017 *
+(B) In Croatia, in 2006
+(C) In the USA, in 2017
+(D) In Sweden, in 2006
+解析: 失敗博物館：**瑞典（Sweden）、2017 年**。
+2006 年、克羅埃西亞（Croatia）是「失戀博物館」。
+
+Q: At first, what did Dr. West want to know?
+(A) How organizations come up with ideas for new products *
+(B) Why people break up
+(C) How to make frozen dinners
+(D) Where to build a museum in Croatia
+解析: 課文第 2 段：At first, he wanted to know **how organizations come up with ideas for new products**。
+後來他對成功故事感到厭倦（got tired of boring success stories）。
+
+Q: Which museum gave Dr. West the idea of building a museum of failed products?
+(A) The Museum of Broken Relationships *
+(B) The Museum of Success
+(C) The Museum of Modern Art
+(D) The Museum of Toys
+解析: 他參觀了位於克羅埃西亞札格雷布（Zagreb, Croatia）的 **Museum of Broken Relationships**（失戀博物館），因此得到靈感。
+
+Q: What does the Museum of Broken Relationships display?
+(A) Objects from failed relationships and the stories behind them *
+(B) Failed products from big companies
+(C) Old smartphones
+(D) Paintings of famous couples
+解析: 課文：a museum that displays objects from failed relationships **along with the stories behind them**（連同背後的故事）。
+
+Q: According to the reading, what is the goal of the Museum of Failure?
+(A) To encourage people to think about why a product failed *
+(B) To laugh at failed products
+(C) To sell old products
+(D) To show only successful products
+解析: 課文句型 **not A but B**（不是 A 而是 B）：the goal was **not to laugh at** failed products **but to encourage** people to think about why a product failed。
+
+Q: Which of the following is NOT one of the three products mentioned in paragraph 3?
+(A) An LED light bulb *
+(B) A plastic bike
+(C) Google Glass
+(D) A frozen dinner made by Colgate
+解析: 第 3 段用 **One… Another… The other…** 介紹三樣：塑膠腳踏車、Google Glass、高露潔（牙膏公司）的冷凍晚餐。
+LED 燈泡是第 1 段提到的**成功**產品。
+
+Q: The frozen dinner in the museum was made by ____.
+(A) a toothpaste company *
+(B) a soda company
+(C) a computer company
+(D) a bike company
+解析: The other is a frozen dinner which was made by **Colgate, the toothpaste company**（牙膏公司）。
+
+Q: According to the reading, why did those cool products end up as failures?
+(A) Because of wrong business strategies *
+(B) Because they were too cheap
+(C) Because they were too amusing
+(D) Because nobody made them
+解析: 課文：ended up as failures **due to the wrong business strategies**，例如：
+- poor marketing（行銷不佳）
+- insufficient knowledge of the target customers（不了解目標客群）
+- bad timing（時機不對）
+
+Q: Which is NOT given as an example of a wrong business strategy?
+(A) Too many colors *
+(B) Poor marketing
+(C) Bad timing
+(D) Insufficient knowledge of the target customers
+解析: 課文舉的三個例子：poor marketing、insufficient knowledge of the target customers、bad timing。
+
+Q: Why did few people like Coca-Cola BlāK?
+(A) Its flavor — it was a mix of Coke and coffee *
+(B) It caused diarrhea
+(C) It was too expensive
+(D) It was behind the times
+解析: BlāK 是 **a mix of Coke and coffee**（可樂加咖啡），but few people liked its **flavor**（味道）。
+
+Q: What was the problem with Pringles's fat-free potato chips?
+(A) One of its ingredients could cause diarrhea. *
+(B) They tasted terrible.
+(C) They were frozen.
+(D) Nobody knew about them.
+解析: 課文：they **tasted fine**, but one of its ingredients **could cause diarrhea**（可能造成腹瀉）。屬於 physical problems（身體上的問題）。
+
+Q: In the reading, "few people liked its flavor" means ____.
+(A) not many people liked its flavor *
+(B) some people liked its flavor
+(C) many people liked its flavor
+(D) everyone liked its flavor
+解析: **few** + 可數複數：很少、幾乎沒有（否定意味）。
+a few 是「一些」，意思是肯定的。
+
+Q: What does the Blockbuster DVD case represent?
+(A) A once-successful company that fell behind the times *
+(B) A new and popular company
+(C) A food that caused physical problems
+(D) A museum in Sweden
+解析: It **represents** a once-successful company that **fell behind the times** and **went out of business** in the end.
+once-successful：曾經成功的。
+
+Q: 課文中 "mark the end of a period of history" 的意思最接近？
+(A) 標誌一個歷史時期的結束 *
+(B) 在歷史課本上做記號
+(C) 歷史考試的分數
+(D) 開創新的歷史
+解析: **mark** v. 標誌；**period** 時期。某些展品象徵一個時代的結束（例如 DVD 出租店）。
+
+Q: 「In contrast」在課文中的意思是？
+(A) 對比之下 *
+(B) 舉例來說
+(C) 最後
+(D) 一開始
+解析: **In contrast** 對比之下（引出相反的情況）。
+For instance = For example（舉例來說）；In the end（最後）；At first（一開始）。
+
+Q: According to the last paragraph, by learning about failed products, people may ____.
+(A) be more willing to embrace their failures *
+(B) stop trying new things
+(C) laugh at other people
+(D) buy more products
+解析: 課文：people may be more **willing to embrace** their failures and become braver on their **path to success**。
+**By + V-ing**：藉由做…。
+
+Q: 課文中 "At first" 可以替換成？
+(A) In the beginning / Initially *
+(B) In the end / Finally
+(C) For instance / For example
+(D) In contrast / However
+解析: At first = **In the beginning = Initially**（起初）。
+
+Q: These products ended up ____ failures.
+(A) as *
+(B) to
+(C) with
+(D) for
+解析: **end up as** + N：最後成為…（as 介系詞「作為」）。
+
+Q: His small idea turned out ____ a big success.
+(A) to be *
+(B) be
+(C) being
+(D) been
+解析: **turn out to be** + N/adj：結果是…。
+課文：it turned out to be a big success。
+
+Q: ____ some products have become great successes, many others have failed.
+(A) While *
+(B) Because
+(C) So
+(D) Due to
+解析: **While** 而、雖然（連接詞，表對比）。
+Although 也可以；due to 後面只能接名詞。
+
+Q: 「Cultural Note」介紹的失戀博物館是由誰、在何時成立？
+(A) 一對藝術家戀人在分手後，於 2006 年成立 *
+(B) Dr. Samuel West 於 2017 年成立
+(C) 瑞典政府於 2006 年成立
+(D) 一家牙膏公司於 2017 年成立
+解析: 克羅埃西亞藝術家戀人 Olinka Vištica 和 Dražen Grubišić 分手後，於 **2006** 年設立「失戀博物館」，收藏世界各地的分手物品與故事。
+
+## U3 對話單字（Finding a Solution）
+
+Q: Our school will hold a singing ____ next month. Do you want to join?
+(A) contest *
+(B) code
+(C) bug
+(D) link
+解析: **contest** n. [C] 比賽。
+
+Q: Click this ____ to watch the video.
+(A) link *
+(B) contest
+(C) opinion
+(D) path
+解析: **link** n. [C] 連結。
+
+Q: In my ____, this plan is the best.
+(A) opinion *
+(B) code
+(C) failure
+(D) period
+解析: **opinion** n. [C] 意見；**In my opinion** 依我看。
+
+Q: The program can't run because there's a ____ in the code.
+(A) bug *
+(B) link
+(C) contest
+(D) goal
+解析: **bug** n. [C]（程式）錯誤。修 bug = debug。
+
+Q: The engineer is writing ____ for a new app.
+(A) code *
+(B) bug
+(C) opinion
+(D) contest
+解析: **code** n. 程式、代碼。
+
+Q: Let's ____ our answers once more before we hand in the test.
+(A) go over *
+(B) go out of
+(C) come up with
+(D) get tired of
+解析: **go over** 重新查看、檢查。
+
+Q: Let's see if your solution is ____.
+(A) workable *
+(B) work
+(C) worker
+(D) working of
+解析: **workable** adj. 行得通的、可行的（work + -able）。對話：Let's see if your solution is workable.
+
+## U3 綜合
+
+Q: 下列 -ize 動詞與中文配對，何者錯誤？
+(A) memorize — 道歉 *
+(B) realize — 了解；實現
+(C) apologize — 道歉
+(D) criticize — 批評
+解析: **memorize** 是「記住、背誦」。
+其他正確：realize 了解／實現、apologize 道歉、criticize 批評。
+
+Q: 下列形容詞與中文配對，何者正確？
+(A) familiar — 熟悉的 *
+(B) regular — 受歡迎的
+(C) similar — 規律的
+(D) popular — 相似的
+解析: popular 受歡迎的、regular 規律的／一般的、similar 相似的、**familiar 熟悉的**。
+
+Q: This writer is famous ____ her funny stories.
+(A) for *
+(B) of
+(C) to
+(D) at
+解析: **be famous for** + N：因…而有名。
+
+Q: His jokes always make the readers ____.
+(A) laugh *
+(B) to laugh
+(C) laughing at
+(D) laughed
+解析: 使役動詞 **make + 受詞 + 原形 V**（課本圈出 make … laugh）。
+
+Q: Dr. West was interested ____ gathering failed products.
+(A) in *
+(B) on
+(C) at
+(D) with
+解析: **be interested in + N/V-ing** 對…有興趣。
+`
+},
+{
 id: 'builtin-elec', name: '基本電學（含實習）', icon: '⚡', version: 1,
 text: `
 ## 電學基本概念
