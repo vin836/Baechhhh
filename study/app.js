@@ -271,8 +271,12 @@ function syncBuiltins() {
       state.banks.splice(Math.min(at, state.banks.length), 0, bank);
     } else {
       if (src.group) have.group = src.group;
-      const ids = new Set(have.questions.map((q) => q.id));
-      for (const q of parsed) if (!ids.has(q.id)) have.questions.push(q);
+      // 同一題（id 相同）更新內容（例如新增詳解），作答紀錄不受影響；新題目加在後面
+      const byId = new Map(have.questions.map((q) => [q.id, q]));
+      for (const q of parsed) {
+        if (byId.has(q.id)) Object.assign(byId.get(q.id), q);
+        else have.questions.push(q);
+      }
     }
     state.builtinVersions[src.id] = src.version;
   }
