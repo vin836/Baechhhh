@@ -21,6 +21,66 @@ const toHalf = (s) => String(s).replace(/[！-～]/g, (c) => String.fromCharCode
 const normAns = (s) => toHalf(s).toLowerCase().replace(/\s+/g, '');
 const trunc = (s, n) => (s.length > n ? s.slice(0, n) + '…' : s);
 
+/* ---------- Markdown（題目、選項、詳解都支援）---------- */
+const RE_SAFE_URL = /^(https?:\/\/|\.\/|\/)/i;
+function mdInline(s) {
+  const codes = [];
+  s = esc(s).replace(/`([^`\n]+)`/g, (_, c) => `\u0000${codes.push(c) - 1}\u0000`);
+  s = s
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, u) => (RE_SAFE_URL.test(u) ? `<img class="md-img" src="${u}" alt="${alt}" loading="lazy">` : m))
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => (RE_SAFE_URL.test(u) ? `<a href="${u}" target="_blank" rel="noopener">${t}</a>` : m))
+    .replace(/\*\*(?=\S)(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^\w*])\*(?=[^\s*])([^*\n]*?[^\s*])\*(?![\w*])/g, '$1<em>$2</em>')
+    .replace(/~~(?=\S)(.+?)~~/g, '<del>$1</del>')
+    .replace(/==(?=\S)(.+?)==/g, '<mark>$1</mark>')
+    .replace(/\^([^\s^]+)\^/g, '<sup>$1</sup>')
+    .replace(/(^|[^~])~([^\s~]+)~(?!~)/g, '$1<sub>$2</sub>');
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${codes[i]}</code>`);
+}
+function md(text) {
+  const lines = String(text ?? '').replace(/\r/g, '').split('\n');
+  const out = [];
+  let para = [];
+  const flushPara = () => { if (para.length) out.push(`<p>${para.map(mdInline).join('<br>')}</p>`); para = []; };
+  const cells = (l) => l.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map((c) => c.trim());
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let m;
+    if (/^\s*\|.*\|\s*$/.test(line) && /^\s*\|?\s*:?-{2,}/.test(lines[i + 1] || '')) {
+      flushPara();
+      const head = cells(line);
+      const rows = [];
+      i += 2;
+      while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) rows.push(cells(lines[i++]));
+      i--;
+      out.push(`<div class="md-table"><table><thead><tr>${head.map((c) => `<th>${mdInline(c)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${mdInline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+    } else if ((m = line.match(/^\s*([-*•])\s+(.*)$/)) || (m = line.match(/^\s*(\d+)[.)]\s+(.*)$/))) {
+      flushPara();
+      const ordered = /\d/.test(m[1]);
+      const re = ordered ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-*•]\s+(.*)$/;
+      const items = [];
+      while (i < lines.length && (m = lines[i].match(re))) { items.push(m[1]); i++; }
+      i--;
+      const tag = ordered ? 'ol' : 'ul';
+      out.push(`<${tag}>${items.map((t) => `<li>${mdInline(t)}</li>`).join('')}</${tag}>`);
+    } else if ((m = line.match(/^\s*>\s?(.*)$/))) {
+      flushPara();
+      const q = [];
+      while (i < lines.length && (m = lines[i].match(/^\s*>\s?(.*)$/))) { q.push(m[1]); i++; }
+      i--;
+      out.push(`<blockquote>${q.map(mdInline).join('<br>')}</blockquote>`);
+    } else if (/^\s*(-{3,}|_{3,})\s*$/.test(line)) { flushPara(); out.push('<hr>'); }
+    else if (!line.trim()) flushPara();
+    else para.push(line);
+  }
+  flushPara();
+  return out.join('');
+}
+/** 單行顯示（選項、清單）：不分段 */
+const mdLine = (s) => mdInline(String(s ?? '').replace(/\s*\n\s*/g, ' '));
+/** 去掉 Markdown 符號（截斷預覽用） */
+const mdPlain = (s) => String(s ?? '').replace(/`([^`]*)`/g, '$1').replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/(\*\*|==|~~)(.+?)\1/g, '$2');
+
 function hash(str) {
   let h = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) {
@@ -141,7 +201,7 @@ const RE_Q = /^(?:Q|題目?)\s*[:：]\s*(.*)$/i;
 const RE_EXPLAIN = /^(?:解析|解|說明)\s*[:：]\s*(.*)$/;
 const RE_ANS = /^(?:答案?|ANS)\s*[:：]\s*(.*)$/i;
 const RE_OPT = /^[（(]?([A-HＡ-Ｈ])\s*[)）.、．:：]\s*(.*)$/;
-const RE_STAR = /\s*[*＊]\s*$/;
+const RE_STAR = /(?<![*＊])\s*[*＊]\s*$/;
 const RE_TRUE = /^(O|○|〇|⭕|對|是|T|TRUE|正確)$/i;
 const RE_FALSE = /^(X|×|✕|❌|錯|否|F|FALSE|錯誤)$/i;
 
@@ -486,7 +546,7 @@ function qListHTML(b, term) {
     const r = rec(q.id);
     return `${head}
       <div class="qitem">
-        <div class="q">${esc(trunc(q.q, 90))}</div>
+        <div class="q">${esc(trunc(mdPlain(q.q), 90))}</div>
         <div class="foot">
           <span><span class="tag">${TYPE_LABEL[q.type]}</span>
             ${r ? `作答 ${r.seen} 次・答對 ${pct(r.correct, r.seen)}%` : '尚未練習'}${r?.wrong ? '・📕' : ''}</span>
@@ -528,7 +588,16 @@ Q: 理想運算放大器的輸入阻抗為無限大。
 答: O                    ← 是非題寫 O 或 X
 
 Q: (1010)₂ 等於十進位多少？
-答: 10 | 十              ← 填空題，多個可接受答案用 | 分隔`;
+答: 10 | 十              ← 填空題，多個可接受答案用 | 分隔
+
+── 支援 Markdown（題目、選項、解析都能用）──
+**粗體**   *斜體*   ==螢光筆==   ~~刪除線~~   \`程式碼\`
+上標 x^2^  下標 V~CE~   連結 [文字](https://…)   圖片 ![說明](https://…)
+解析裡可以用清單（- 項目 / 1. 步驟）、引言（> 注意）、表格：
+| 區域 | BE | BC |
+|---|---|---|
+| 主動 | 順 | 逆 |
+（題目內不要空行；選項只支援單行格式）`;
 
 VIEWS.batch = ({ id }) => {
   const b = getBank(id);
@@ -1088,7 +1157,7 @@ VIEWS.quiz = () => {
       if (answered) cls += isAns ? ' correct' : chosen ? ' wrong' : ' dim';
       else if (chosen) cls += ' selected';
       return `<button class="${cls}" data-action="${q.type === 'multi' ? 'toggle' : 'pick'}" data-i="${oi}" ${answered ? 'disabled' : ''}>
-        <span class="key">${LETTERS[di]}</span><span>${esc(q.options[oi])}</span></button>`;
+        <span class="key">${LETTERS[di]}</span><span class="md">${mdLine(q.options[oi])}</span></button>`;
     }).join('')}</div>`;
     if (q.type === 'multi' && !answered) {
       body += `<p class="small muted center">多選題：選出所有正確答案後按確認</p>
@@ -1113,9 +1182,9 @@ VIEWS.quiz = () => {
     feedback = `
       <div class="feedback ${it.ok ? 'ok' : 'bad'}">
         <div class="title">${it.ok ? '✓ 答對了！' : '✗ 答錯了'}</div>
-        ${it.ok ? '' : `<div>正確答案：${esc(correctTextInQuiz(q, it))}</div>`}
+        ${it.ok ? '' : `<div>正確答案：${mdLine(correctTextInQuiz(q, it))}</div>`}
         ${it.cleared ? `<div>🎉 已連續答對 ${CLEAR_STREAK} 次，移出錯題本</div>` : ''}
-        ${q.explain ? `<div class="explain">💡 ${esc(q.explain)}</div>` : ''}
+        ${q.explain ? `<div class="explain md">💡 ${md(q.explain)}</div>` : ''}
       </div>
       <div class="next-bar"><button class="btn primary block" data-action="next">${last ? '看結果 🏁' : '下一題 →'}</button></div>`;
   }
@@ -1125,7 +1194,7 @@ VIEWS.quiz = () => {
 
   return `${head}
     <div>${tags}</div>
-    <div class="question">${esc(q.q)}</div>
+    <div class="question md">${md(q.q)}</div>
     <div id="boardSlot"></div>
     <div class="row end board-row">
       <button class="btn ghost small" data-action="toggle-board">${boardOpen ? '收起白板' : '✏️ 白板'}</button>
@@ -1213,10 +1282,10 @@ VIEWS.result = () => {
       <div class="card stack">
         ${wrongItems.map(({ q, a }) => `
           <div class="qitem">
-            <div class="q">${esc(q.q)}</div>
-            <div class="yours small">你的答案：${esc(answerText(q, a))}</div>
-            <div class="ans">正確答案：${esc(answerText(q, q.answer))}</div>
-            ${q.explain ? `<div class="explain">💡 ${esc(q.explain)}</div>` : ''}
+            <div class="q md">${md(q.q)}</div>
+            <div class="yours small">你的答案：${mdLine(answerText(q, a))}</div>
+            <div class="ans">正確答案：${mdLine(answerText(q, q.answer))}</div>
+            ${q.explain ? `<div class="explain md">💡 ${md(q.explain)}</div>` : ''}
           </div>`).join('')}
       </div>` : ''}`;
 };
@@ -1249,9 +1318,9 @@ VIEWS.wrong = () => {
             const r = rec(q.id);
             return `
               <div class="qitem">
-                <div class="q">${esc(q.q)}</div>
-                <div class="ans">✓ ${esc(answerText(q, q.answer))}</div>
-                ${q.explain ? `<div class="explain">💡 ${esc(q.explain)}</div>` : ''}
+                <div class="q md">${md(q.q)}</div>
+                <div class="ans">✓ ${mdLine(answerText(q, q.answer))}</div>
+                ${q.explain ? `<div class="explain md">💡 ${md(q.explain)}</div>` : ''}
                 <div class="foot">
                   <span>錯 ${r.wrongCount || 1} 次・連續答對 ${r.streak}/${CLEAR_STREAK}</span>
                   <button class="btn ghost small" data-action="unwrong" data-id="${q.id}">我會了，移出</button>

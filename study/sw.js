@@ -1,5 +1,5 @@
 // 刷題本離線快取：有網路時先抓最新版（打開就是新題庫），沒網路或網路太慢才用快取（通勤離線也能用）。
-const CACHE = 'study-quiz-v10';
+const CACHE = 'study-quiz-v11';
 const SHELL = ['./', './index.html', './style.css', './app.js', './banks.js', './manifest.webmanifest', './icon.svg'];
 const NETWORK_TIMEOUT = 4000;
 

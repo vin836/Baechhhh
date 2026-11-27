@@ -349,3 +349,24 @@ textarea.short { min-height: 84px; font-family: inherit; font-size: 1rem; }
 }
 .pq b { margin-left: 2px; }
 a.btn { text-decoration: none; color: inherit; }
+
+/* Markdown */
+.md p { margin: 0 0 .5em; }
+.md p:last-child { margin-bottom: 0; }
+.explain.md > p:first-of-type { display: inline; }
+.explain.md > p:first-of-type + * { margin-top: .5em; }
+.md ul, .md ol { margin: .3em 0 .5em; padding-left: 1.4em; }
+.md li { margin: .15em 0; }
+.md strong { font-weight: 700; }
+.question.md strong { font-weight: 800; }
+.md code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; background: rgba(127,127,127,.15); padding: .05em .35em; border-radius: 4px; }
+.md mark { background: #ffe58a; color: #222; padding: 0 .15em; border-radius: 3px; }
+.md del { opacity: .65; }
+.md blockquote { margin: .4em 0; padding: .3em .7em; border-left: 3px solid var(--primary); background: rgba(127,127,127,.08); border-radius: 0 6px 6px 0; }
+.md hr { border: 0; border-top: 1px solid rgba(127,127,127,.3); margin: .6em 0; }
+.md a { color: var(--primary); }
+.md img.md-img { max-width: 100%; border-radius: 8px; display: block; margin: .4em 0; }
+.md-table { overflow-x: auto; margin: .4em 0 .6em; }
+.md table { border-collapse: collapse; font-size: .92em; }
+.md th, .md td { border: 1px solid rgba(127,127,127,.35); padding: .3em .6em; text-align: center; }
+.md th { background: rgba(127,127,127,.12); }
