@@ -277,6 +277,9 @@ function syncBuiltins() {
         if (byId.has(q.id)) Object.assign(byId.get(q.id), q);
         else have.questions.push(q);
       }
+      // 內建題目依題庫檔的章節順序排列，自己加的題目保留在最後
+      const order = new Map(parsed.map((q, i) => [q.id, i]));
+      have.questions.sort((a, b) => (order.get(a.id) ?? Infinity) - (order.get(b.id) ?? Infinity));
     }
     state.builtinVersions[src.id] = src.version;
   }
