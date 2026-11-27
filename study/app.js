@@ -334,6 +334,48 @@ const notFound = () => `
 
 /* ---------- 首頁 ---------- */
 
+/* ---------- 統測歷屆試題（連到技專校院入學測驗中心官方 PDF） ---------- */
+
+const TCTE_HOME = 'https://www.tcte.edu.tw/index.php?mod=TVETest/down_exam4y';
+const tctePdf = (y, kind = '') => `https://web1.tcte.edu.tw/EXAM/${y}_4y/downloader.php?obj=${btoa(`${y}-4y-04-1${kind}.pdf`)}`;
+
+// 電機與電子群資電類 專業科目(一) 中與 BJT（電子學 Ch3～4）相關的題號與標準答案
+const PAST_EXAMS = [
+  { y: 115, main: '28A 29B 30C 43C 45D', ext: '31D' },
+  { y: 114, main: '29A 30C 41D 43D', ext: '44B 45B' },
+  { y: 113, main: '27B 28D 29A 30D 45D', ext: '31D' },
+  { y: 112, main: '29B 30D 31C 32A 48D', ext: '38D 49C 50B' },
+  { y: 111, main: '28D 29A 30C 44C 45B', ext: '31C 32A 33C 34A' },
+  { y: 110, main: '6B 7D 8B 9A 10C 11A 12C 13A', ext: '14B' },
+  { y: 109, main: '9C 11D 12D 17C 18B 19C 20D', ext: '' },
+  { y: 108, main: '', ext: '', note: '108 年試題是掃描檔，題號請直接看 PDF' },
+];
+
+const fmtPast = (s) => s.split(' ').filter(Boolean).map((t) => `<span class="pq">${t.replace(/([A-D])$/, '<b>$1</b>')}</span>`).join('');
+
+VIEWS.past = () => `
+  <div class="section-head"><h1>📄 統測歷屆試題</h1></div>
+  <div class="card stack small">
+    <p>電機與電子群資電類・<b>專業科目(一)</b>（基本電學、電子學及實習）。點按鈕會開啟<b>技專校院入學測驗中心</b>的官方 PDF。</p>
+    <p class="muted">下方列出各年與<b>電子學 Ch3～4（BJT）</b>相關的題號，粗體字母是標準答案。「延伸」是串級放大等相關題，段考範圍外但值得一看。</p>
+    <p class="muted">💡 題庫裡標有「仿 ○○ 年統測」的題目，是依這些題型自編、換過數字的練習題。</p>
+  </div>
+  ${PAST_EXAMS.map((e) => `
+    <div class="card past-card">
+      <div class="row">
+        <h3 class="grow">${e.y} 學年度</h3>
+        <a class="btn small" href="${tctePdf(e.y)}" target="_blank" rel="noopener">📄 試題</a>
+        <a class="btn small" href="${tctePdf(e.y, '-standard')}" target="_blank" rel="noopener">✅ 答案</a>
+      </div>
+      ${e.main ? `<div class="past-row"><span class="muted">Ch3～4：</span>${fmtPast(e.main)}</div>` : ''}
+      ${e.ext ? `<div class="past-row"><span class="muted">延伸：</span>${fmtPast(e.ext)}</div>` : ''}
+      ${e.note ? `<div class="past-row muted">${esc(e.note)}</div>` : ''}
+    </div>`).join('')}
+  <p class="small muted center" style="margin-top:16px">
+    更早的年度或其他群類：<a href="${TCTE_HOME}" target="_blank" rel="noopener">測驗中心「報名人數、簡章、試題」頁面</a><br>
+    試題版權屬技專校院入學測驗中心，本 App 只提供連結與題號整理。
+  </p>`;
+
 const MAIN_GROUP = '我的題庫';
 
 function bankGroups() {
@@ -368,6 +410,12 @@ VIEWS.home = () => {
         <div class="bank-list">
           ${banks.map(bankCard).join('') || `
             <div class="card empty"><div class="big">📚</div><p>還沒有自己的題庫，按「新增題庫」開始吧！</p></div>`}
+          ${g === '第二次段考' ? `
+            <button class="card past-link" data-nav="past">
+              <span class="bank-ico">📄</span>
+              <span class="grow"><b>統測歷屆試題（官方）</b><br><span class="small muted">108～115 年專一試題與答案・標出 Ch3～4 題號</span></span>
+              <span class="muted">›</span>
+            </button>` : ''}
         </div>`;
     }).join('')}`;
 };

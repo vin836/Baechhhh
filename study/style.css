@@ -334,3 +334,18 @@ textarea.short { min-height: 84px; font-family: inherit; font-size: 1rem; }
   background-position: -1px -1px;
 }
 .board.tall canvas { height: 62vh; }
+
+/* 統測歷屆試題 */
+.past-link {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  text-align: left; cursor: pointer; font: inherit; color: inherit;
+}
+.past-card { margin-top: 10px; }
+.past-card h3 { font-size: 1.05rem; }
+.past-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; font-size: .88rem; }
+.pq {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  background: var(--primary-soft); color: var(--primary); font-variant-numeric: tabular-nums;
+}
+.pq b { margin-left: 2px; }
+a.btn { text-decoration: none; color: inherit; }
