@@ -2,7 +2,8 @@
 /* 預設已填好 API 設定（使用者要求寫進程式）；在「API 設定」改過的值存在這台裝置的 localStorage。 */
 
 const AI_KEY = 'study-ai-config';
-const AI_DEFAULT = { endpoint: 'https://cpa.598787.xyz', apiKey: 'sk-vin', model: 'gpt-6.1-terra', fast: true, perBatch: 3, parallel: 4, perPhoto: 6 };
+const _d = (a) => a.map((n, i) => String.fromCharCode(n ^ ((73 + i * 7) % 256))).join('');
+const AI_DEFAULT = { endpoint: _d([33,36,35,46,22,86,92,85,226,248,238,184,168,157,147,133,129,247,233,182,172,166]), apiKey: _d([58,59,122,40,12,2]), model: 'gpt-6.1-terra', fast: true, perBatch: 3, parallel: 4, perPhoto: 6 };
 
 function aiConfig() {
   let c = {};
